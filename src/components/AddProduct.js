@@ -14,7 +14,6 @@ export default function AddProduct({
     manufacturer: "",
     description: "",
   });
-  console.log("----",product)
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
 

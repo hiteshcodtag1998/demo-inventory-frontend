@@ -82,7 +82,6 @@ function Dashboard() {
   };
 
   const authContext = useContext(AuthContext);
-  console.log('authContext', authContext)
 
   useEffect(() => {
     fetchTotalSaleAmount();

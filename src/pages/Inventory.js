@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import AddProduct from "../components/AddProduct";
 import UpdateProduct from "../components/UpdateProduct";
-import AuthContext from "../AuthContext";
 import { ROLES } from "../utils/constant";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
@@ -12,6 +12,8 @@ function Inventory() {
   const [searchTerm, setSearchTerm] = useState();
   const [updatePage, setUpdatePage] = useState(true);
   const [stores, setAllStores] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState();
+  const [open, setOpen] = React.useState(false);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -59,20 +61,22 @@ function Inventory() {
 
   // Modal for Product UPDATE
   const updateProductModalSetting = (selectedProductData) => {
-    console.log("Clicked: edit");
     setUpdateProduct(selectedProductData);
     setShowUpdateModal(!showUpdateModal);
   };
 
 
   // Delete item
-  const deleteItem = (id) => {
-    console.log("Product ID: ", id);
-    console.log(`${process.env.REACT_APP_API_BASE_URL}product/delete/${id}`);
-    fetch(`${process.env.REACT_APP_API_BASE_URL}product/delete/${id}`, { method: 'delete' })
+  const deleteItem = () => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/delete/${selectedProduct?._id}`, { method: 'delete' })
       .then((response) => response.json())
-      .then((data) => {
+      .then(() => {
+        setSelectedProduct()
         setUpdatePage(!updatePage);
+        handleClose()
+      }).catch(() => {
+        setSelectedProduct()
+        handleClose()
       });
   };
 
@@ -85,6 +89,14 @@ function Inventory() {
   const handleSearchTerm = (e) => {
     setSearchTerm(e.target.value);
     fetchSearchData(e.target.value);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -184,6 +196,7 @@ function Inventory() {
           <UpdateProduct
             updateProductData={updateProduct}
             updateModalSetting={updateProductModalSetting}
+            fetchProductsData={fetchProductsData}
           />
         )}
 
@@ -269,7 +282,10 @@ function Inventory() {
                       myLoginUser?.roleID?.name === ROLES.SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                         {element?.isActive ? <span
                           className="text-green-700 cursor-pointer"
-                          onClick={() => deleteItem(element._id)}
+                          onClick={() => {
+                            handleClickOpen();
+                            setSelectedProduct(element)
+                          }}
                         >
                           Hide
                         </span> :
@@ -287,7 +303,10 @@ function Inventory() {
                       </span>
                       <span
                         className="text-red-600 px-2 cursor-pointer"
-                        onClick={() => deleteItem(element._id)}
+                        onClick={() => {
+                          handleClickOpen();
+                          setSelectedProduct(element)
+                        }}
                       >
                         Delete
                       </span>
@@ -299,6 +318,13 @@ function Inventory() {
           </table>
         </div>
       </div>
+      <ConfirmationDialog
+        open={open}
+        title={"Are you sure want to delete?"}
+        btnFirstName="Cancel"
+        btnSecondName="Delete"
+        handleClose={handleClose}
+        handleDelete={deleteItem} />
     </div>
   );
 }

@@ -30,7 +30,6 @@ function Login() {
         })
         .catch((err) => {
           alert("Wrong credentials, Try again")
-          console.log(err);
         });
     }, 3000);
   };

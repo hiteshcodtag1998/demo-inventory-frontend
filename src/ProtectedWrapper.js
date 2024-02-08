@@ -4,9 +4,6 @@ import { Navigate } from "react-router-dom";
 
 function ProtectedWrapper(props) {
   const auth = JSON.parse(localStorage.getItem("user"));
-  console.log("====================================");
-  console.log(auth);
-  console.log("====================================");
 
   if (!auth) {
     return <Navigate to="/login" replace />;

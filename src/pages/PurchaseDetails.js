@@ -94,11 +94,6 @@ function PurchaseDetails() {
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Total Purchase Amount
                 </th>
-                {
-                  myLoginUser?.roleID?.name === ROLES.SUPER_ADMIN && <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                    Hide
-                  </th>
-                }
               </tr>
             </thead>
 
@@ -121,19 +116,6 @@ function PurchaseDetails() {
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}
                     </td>
-                    {
-                      myLoginUser?.roleID?.name === ROLES.SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                        {element?.isActive ? <span
-                          className="text-green-700 cursor-pointer"
-                        >
-                          Hide
-                        </span> :
-                          <span
-                            className="text-red-700"
-                          >Not Active</span>}
-                      </td>
-                    }
-
                   </tr>
                 );
               })}
