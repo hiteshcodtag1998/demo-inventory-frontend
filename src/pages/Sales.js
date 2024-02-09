@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import AddSale from "../components/AddSale";
 import AuthContext from "../AuthContext";
+import { toastMessage } from "../utils/handler";
+import { TOAST_TYPE } from "../utils/constant";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
@@ -27,7 +29,7 @@ function Sales() {
       .then((data) => {
         setAllSalesData(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Fetching Data of All Products
@@ -39,7 +41,7 @@ function Sales() {
       .then((data) => {
         setAllProducts(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Fetching Data of All Stores

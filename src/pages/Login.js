@@ -2,6 +2,8 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../AuthContext";
+import { toastMessage } from "../utils/handler";
+import { TOAST_TYPE } from "../utils/constant";
 
 function Login() {
   const [form, setForm] = useState({
@@ -22,14 +24,14 @@ function Login() {
       fetch(`${process.env.REACT_APP_API_BASE_URL}login`)
         .then((response) => response.json())
         .then((data) => {
-          alert("Successfully Login");
+          toastMessage("Successfully Login", TOAST_TYPE.TYPE_SUCCESS)
           localStorage.setItem("user", JSON.stringify(data));
           authContext.signin(data, () => {
             navigate("/");
           });
         })
-        .catch((err) => {
-          alert("Wrong credentials, Try again")
+        .catch(() => {
+          toastMessage("Wrong credentials, Try again", TOAST_TYPE.TYPE_ERROR)
         });
     }, 3000);
   };
@@ -37,7 +39,7 @@ function Login() {
   const loginUser = (e) => {
     // Cannot send empty data
     if (form.email === "" || form.password === "") {
-      alert("To login user, enter details to proceed...");
+      toastMessage("To login user, enter details to proceed...", TOAST_TYPE.TYPE_ERROR)
     } else {
       fetch(`${process.env.REACT_APP_API_BASE_URL}login`, {
         method: "POST",
@@ -49,8 +51,8 @@ function Login() {
         .then((result) => {
           console.log("User login", result);
         })
-        .catch((error) => {
-          console.log("Something went wrong ", error);
+        .catch((err) => {
+          toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR)
         });
     }
     authCheck();

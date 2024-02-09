@@ -3,6 +3,8 @@ import Chart from "react-apexcharts";
 import AuthContext from "../AuthContext";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { toastMessage } from "../utils/handler";
+import { TOAST_TYPE } from "../utils/constant";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 export const data = {
@@ -121,7 +123,7 @@ function Dashboard() {
     fetch(`${process.env.REACT_APP_API_BASE_URL}product/get`)
       .then((response) => response.json())
       .then((datas) => setProducts(datas))
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Fetching Monthly Sales
@@ -129,7 +131,7 @@ function Dashboard() {
     fetch(`${process.env.REACT_APP_API_BASE_URL}sales/getmonthly`)
       .then((response) => response.json())
       .then((datas) => updateChartData(datas.salesAmount))
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   return (

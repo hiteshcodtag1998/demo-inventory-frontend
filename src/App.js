@@ -13,6 +13,9 @@ import { useEffect, useState } from "react";
 import Store from "./pages/Store";
 import Sales from "./pages/Sales";
 import PurchaseDetails from "./pages/PurchaseDetails";
+import { ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
 
@@ -79,6 +82,7 @@ const App = () => {
           </Route>
           <Route path="*" element={<NoPageFound />} />
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </AuthContext.Provider>
   );

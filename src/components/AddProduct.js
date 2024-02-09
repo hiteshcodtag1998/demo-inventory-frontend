@@ -2,6 +2,8 @@ import { Fragment, useContext, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import AuthContext from "../AuthContext";
+import { TOAST_TYPE } from "../utils/constant";
+import { toastMessage } from "../utils/handler";
 
 export default function AddProduct({
   addProductModalSetting,
@@ -29,12 +31,14 @@ export default function AddProduct({
       },
       body: JSON.stringify(product),
     })
-      .then((result) => {
-        alert("Product ADDED");
+      .then(() => {
+        toastMessage("Product ADDED", TOAST_TYPE.TYPE_SUCCESS)
         handlePageUpdate();
         addProductModalSetting();
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR)
+      );
   };
 
   return (

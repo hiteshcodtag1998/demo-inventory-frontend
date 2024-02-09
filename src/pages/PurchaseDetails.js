@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import AddPurchaseDetails from "../components/AddPurchaseDetails";
 import AuthContext from "../AuthContext";
-import { ROLES } from "../utils/constant";
+import { TOAST_TYPE } from "../utils/constant";
+import { toastMessage } from "../utils/handler";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -26,7 +27,7 @@ function PurchaseDetails() {
       .then((data) => {
         setAllPurchaseData(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Fetching Data of All Products
@@ -38,7 +39,7 @@ function PurchaseDetails() {
       .then((data) => {
         setAllProducts(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Modal for Sale Add

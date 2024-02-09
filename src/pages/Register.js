@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { TOAST_TYPE } from "../utils/constant";
+import { toastMessage } from "../utils/handler";
 // import UploadImage from "../components/UploadImage";
 
 function Register() {
@@ -28,12 +30,12 @@ function Register() {
       },
       body: JSON.stringify(form),
     })
-      .then((result) => {
-        alert("Successfully Registered, Now Login with your details");
+      .then(() => {
+        toastMessage("Successfully Registered, Now Login with your details", TOAST_TYPE.TYPE_SUCCESS)
         navigate('/login')
 
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
   // ------------------
 

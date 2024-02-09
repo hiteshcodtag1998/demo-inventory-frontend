@@ -1,6 +1,8 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { toastMessage } from "../utils/handler";
+import { TOAST_TYPE } from "../utils/constant";
 
 export default function AddSale({
   addSaleModalSetting,
@@ -35,12 +37,12 @@ export default function AddSale({
       },
       body: JSON.stringify(sale),
     })
-      .then((result) => {
-        alert("Sale ADDED");
+      .then(() => {
+        toastMessage("Sale ADDED", TOAST_TYPE.TYPE_SUCCESS)
         handlePageUpdate();
         addSaleModalSetting();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   return (

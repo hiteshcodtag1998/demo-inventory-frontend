@@ -3,6 +3,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import UploadImage from "./UploadImage";
 import AuthContext from "../AuthContext";
+import { TOAST_TYPE } from "../utils/constant";
+import { toastMessage } from "../utils/handler";
 
 export default function AddStore({ setAdded }) {
   const authContext = useContext(AuthContext);
@@ -30,12 +32,12 @@ export default function AddStore({ setAdded }) {
       },
       body: JSON.stringify(form),
     })
-      .then((result) => {
-        alert("STORE ADDED");
+      .then(() => {
+        toastMessage("STORE ADDED", TOAST_TYPE.TYPE_SUCCESS)
         setOpen(false);
         setAdded(true)
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Uploading image to cloudinary

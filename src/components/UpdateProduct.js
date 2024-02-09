@@ -1,6 +1,8 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { TOAST_TYPE } from "../utils/constant";
+import { toastMessage } from "../utils/handler";
 
 export default function UpdateProduct({
   updateProductData,
@@ -29,12 +31,12 @@ export default function UpdateProduct({
       },
       body: JSON.stringify(product),
     })
-      .then((result) => {
-        alert("Product Updated");
+      .then(() => {
+        toastMessage("Product Updated", TOAST_TYPE.TYPE_SUCCESS)
         fetchProductsData();
         setOpen(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   return (

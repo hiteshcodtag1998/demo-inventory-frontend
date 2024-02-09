@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AddProduct from "../components/AddProduct";
 import UpdateProduct from "../components/UpdateProduct";
-import { ROLES } from "../utils/constant";
+import { ROLES, TOAST_TYPE } from "../utils/constant";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import { toastMessage } from "../utils/handler";
 
 function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
@@ -30,7 +31,7 @@ function Inventory() {
       .then((data) => {
         setAllProducts(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // Fetching Data of Search Products
@@ -42,7 +43,7 @@ function Inventory() {
       .then((data) => {
         setAllProducts(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   // // Fetching all stores data
