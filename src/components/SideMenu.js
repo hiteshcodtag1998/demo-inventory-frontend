@@ -71,7 +71,7 @@ function SideMenu() {
         <div className="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
           <img
             alt="Profile"
-            src={localStorageData.imageUrl}
+            src={`https://eu.ui-avatars.com/api/?name=${localStorageData.firstName}+${localStorageData.lastName}&size=250`}
             className="h-10 w-10 rounded-full object-cover"
           />
 

@@ -39,6 +39,7 @@ function Dashboard() {
   const [purchaseAmount, setPurchaseAmount] = useState("");
   const [stores, setStores] = useState([]);
   const [products, setProducts] = useState([]);
+  const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   const [chart, setChart] = useState({
     options: {
@@ -96,7 +97,9 @@ function Dashboard() {
   // Fetching total sales amount
   const fetchTotalSaleAmount = () => {
     fetch(
-      `${process.env.REACT_APP_API_BASE_URL}sales/get/totalsaleamount`
+      `${process.env.REACT_APP_API_BASE_URL}sales/get/totalsaleamount`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    }
     )
       .then((response) => response.json())
       .then((datas) => setSaleAmount(datas.totalSaleAmount));
@@ -105,7 +108,9 @@ function Dashboard() {
   // Fetching total purchase amount
   const fetchTotalPurchaseAmount = () => {
     fetch(
-      `${process.env.REACT_APP_API_BASE_URL}purchase/get/totalpurchaseamount`
+      `${process.env.REACT_APP_API_BASE_URL}purchase/get/totalpurchaseamount`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    }
     )
       .then((response) => response.json())
       .then((datas) => setPurchaseAmount(datas.totalPurchaseAmount));
@@ -113,14 +118,18 @@ function Dashboard() {
 
   // Fetching all stores data
   const fetchStoresData = () => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}store/get`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}store/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
       .then((response) => response.json())
       .then((datas) => setStores(datas));
   };
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}product/get`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
       .then((response) => response.json())
       .then((datas) => setProducts(datas))
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
@@ -128,7 +137,9 @@ function Dashboard() {
 
   // Fetching Monthly Sales
   const fetchMonthlySalesData = () => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}sales/getmonthly`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}sales/getmonthly`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
       .then((response) => response.json())
       .then((datas) => updateChartData(datas.salesAmount))
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
@@ -167,7 +178,7 @@ function Dashboard() {
                 ${saleAmount}
               </span>
 
-              <span className="text-xs text-gray-500"> from $0 </span>
+              {/* <span className="text-xs text-gray-500"> from $0 </span> */}
             </p>
           </div>
         </article>
@@ -203,7 +214,7 @@ function Dashboard() {
                 ${purchaseAmount}{" "}
               </span>
 
-              <span className="text-xs text-gray-500"> from $0</span>
+              {/* <span className="text-xs text-gray-500"> from $0</span> */}
             </p>
           </div>
         </article>

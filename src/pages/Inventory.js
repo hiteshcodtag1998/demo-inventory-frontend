@@ -4,6 +4,7 @@ import UpdateProduct from "../components/UpdateProduct";
 import { ROLES, TOAST_TYPE } from "../utils/constant";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import { toastMessage } from "../utils/handler";
+import { MdEdit, MdDeleteForever, MdOutlineHideSource } from "react-icons/md";
 
 function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
@@ -105,8 +106,8 @@ function Inventory() {
       <div className=" flex flex-col gap-5 w-11/12">
         <div className="bg-white rounded p-3">
           <span className="font-semibold px-4">Overall Inventory</span>
-          <div className=" flex flex-col md:flex-row justify-center items-center  ">
-            <div className="flex flex-col p-10  w-full  md:w-3/12  ">
+          <div className=" flex flex-col md:flex-row md:justify-start md:items-center">
+            <div className="flex flex-col p-10  w-full  md:w-3/12">
               <span className="font-semibold text-blue-600 text-base">
                 Total Products
               </span>
@@ -140,7 +141,7 @@ function Inventory() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  sm:border-y-2 md:border-x-2 md:border-y-0">
+            {/* <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  sm:border-y-2 md:border-x-2 md:border-y-0">
               <span className="font-semibold text-purple-600 text-base">
                 Top Selling
               </span>
@@ -160,8 +161,8 @@ function Inventory() {
                   <span className="font-thin text-gray-400 text-xs">Cost</span>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  border-y-2  md:border-x-2 md:border-y-0">
+            </div> */}
+            {/* <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  border-y-2  md:border-x-2 md:border-y-0">
               <span className="font-semibold text-red-600 text-base">
                 Low Stocks
               </span>
@@ -183,7 +184,7 @@ function Inventory() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -288,29 +289,31 @@ function Inventory() {
                             setSelectedProduct(element)
                           }}
                         >
-                          Hide
+                          <MdOutlineHideSource />
                         </span> :
                           <span
                             className="text-red-700"
-                          >Not Active</span>}
+                          >Hidden</span>}
                       </td>
                     }
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      <span
-                        className="text-green-700 cursor-pointer"
-                        onClick={() => updateProductModalSetting(element)}
-                      >
-                        Edit{" "}
-                      </span>
-                      <span
-                        className="text-red-600 px-2 cursor-pointer"
-                        onClick={() => {
-                          handleClickOpen();
-                          setSelectedProduct(element)
-                        }}
-                      >
-                        Delete
-                      </span>
+                      <div className="flex">
+                        <span
+                          className="text-green-700 cursor-pointer"
+                          onClick={() => updateProductModalSetting(element)}
+                        >
+                          <MdEdit />
+                        </span>
+                        <span
+                          className="text-red-600 px-2 cursor-pointer"
+                          onClick={() => {
+                            handleClickOpen();
+                            setSelectedProduct(element)
+                          }}
+                        >
+                          <MdDeleteForever width={50} height={50} />
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 );
