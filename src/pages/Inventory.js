@@ -15,7 +15,8 @@ function Inventory() {
   const [updatePage, setUpdatePage] = useState(true);
   const [stores, setAllStores] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [dialogData, setDialogData] = useState();
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -287,6 +288,10 @@ function Inventory() {
                           onClick={() => {
                             handleClickOpen();
                             setSelectedProduct(element)
+                            setDialogData({
+                              title: 'Are you sure want to hide?',
+                              btnSecText: 'Hide'
+                            })
                           }}
                         >
                           <MdOutlineHideSource />
@@ -309,6 +314,10 @@ function Inventory() {
                           onClick={() => {
                             handleClickOpen();
                             setSelectedProduct(element)
+                            setDialogData({
+                              title: 'Are you sure want to delete?',
+                              btnSecText: 'Delete'
+                            })
                           }}
                         >
                           <MdDeleteForever width={50} height={50} />
@@ -324,9 +333,9 @@ function Inventory() {
       </div>
       <ConfirmationDialog
         open={open}
-        title={"Are you sure want to delete?"}
+        title={dialogData?.title || ""}
         btnFirstName="Cancel"
-        btnSecondName="Delete"
+        btnSecondName={dialogData?.btnSecText || ""}
         handleClose={handleClose}
         handleDelete={deleteItem} />
     </div>

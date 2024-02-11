@@ -78,7 +78,7 @@ function SideMenu() {
           <div>
             <p className="text-xs">
               <strong className="block font-medium">
-                {localStorageData.firstName + " " + localStorageData.lastName}
+                {localStorageData.firstName + " " + localStorageData.lastName} {" "} ({localStorageData?.roleID?.name})
               </strong>
 
               <span> {localStorageData.email} </span>
