@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 function History() {
     const [history, setAllHistory] = useState([]);
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
         fetchData();
@@ -9,7 +10,10 @@ function History() {
 
     // Fetching all history data
     const fetchData = () => {
-        fetch(`http://localhost:4000/api/history/get`)
+        fetch(`http://localhost:4000/api/history/get`,
+            {
+                headers: { role: myLoginUser?.roleID?.name }
+            })
             .then((response) => response.json())
             .then((data) => {
                 setAllHistory(data);

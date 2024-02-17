@@ -10,6 +10,7 @@ export default function UpdateProduct({
   fetchProductsData
 }) {
   const { _id, name, manufacturer, description } = updateProductData;
+  const myLoginUser = JSON.parse(localStorage.getItem("user"));
   const [product, setProduct] = useState({
     productID: _id,
     name: name,
@@ -27,6 +28,7 @@ export default function UpdateProduct({
     fetch("http://localhost:4000/api/product/update", {
       method: "POST",
       headers: {
+        role: myLoginUser?.roleID?.name,
         "Content-type": "application/json",
       },
       body: JSON.stringify(product),

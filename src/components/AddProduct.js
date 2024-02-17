@@ -10,6 +10,7 @@ export default function AddProduct({
   handlePageUpdate,
 }) {
   const authContext = useContext(AuthContext);
+  const myLoginUser = JSON.parse(localStorage.getItem("user"));
   const [product, setProduct] = useState({
     userId: authContext.user,
     name: "",
@@ -27,6 +28,7 @@ export default function AddProduct({
     fetch("http://localhost:4000/api/product/add", {
       method: "POST",
       headers: {
+        role: myLoginUser?.roleID?.name,
         "Content-type": "application/json",
       },
       body: JSON.stringify(product),

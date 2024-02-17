@@ -71,7 +71,8 @@ function Inventory() {
 
   // Delete item
   const deleteItem = () => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}product/delete/${selectedProduct?._id}`, { method: 'delete' })
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/delete/${selectedProduct?._id}`,
+      { method: 'delete', headers: { role: myLoginUser?.roleID?.name }, })
       .then((response) => response.json())
       .then(() => {
         setSelectedProduct()
