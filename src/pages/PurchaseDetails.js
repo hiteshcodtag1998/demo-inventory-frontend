@@ -99,6 +99,15 @@ function PurchaseDetails() {
             </thead>
 
             <tbody className="divide-y divide-gray-200">
+              {
+                purchase?.length === 0 && <div
+                  className="bg-white w-50 h-fit flex flex-col gap-4 p-4 "
+                >
+                  <div className="flex flex-col gap-3 justify-between items-start">
+                    <span>No data found</span>
+                  </div>
+                </div>
+              }
               {purchase.map((element, index) => {
                 return (
                   <tr key={element._id}>

@@ -45,6 +45,15 @@ function Store() {
           </button>
         </div>
         {showModal && <AddStore setAdded={setAdded} />}
+        {
+          stores?.length === 0 && <div
+            className="bg-white w-50 h-fit flex flex-col gap-4 p-4 "
+          >
+            <div className="flex flex-col gap-3 justify-between items-start">
+              <span>No data found</span>
+            </div>
+          </div>
+        }
         {stores.map((element, index) => {
           return (
             <div

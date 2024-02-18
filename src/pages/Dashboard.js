@@ -165,7 +165,7 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium">0% </span>
+            <span className="text-xs font-medium">1% </span>
           </div>
 
           <div>
@@ -200,7 +200,7 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium"> 0% </span>
+            <span className="text-xs font-medium"> 2% </span>
           </div>
 
           <div>
@@ -235,7 +235,7 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium"> 0% </span>
+            <span className="text-xs font-medium"> 1% </span>
           </div>
 
           <div>
@@ -270,7 +270,7 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium"> 0% </span>
+            <span className="text-xs font-medium"> 5% </span>
           </div>
 
           <div>

@@ -38,6 +38,15 @@ function History() {
                         </div>
                     );
                 })}
+                {
+                    history?.length === 0 && <div
+                        className="bg-white w-50 h-fit flex flex-col gap-4 p-4 "
+                    >
+                        <div className="flex flex-col gap-3 justify-between items-start">
+                            <span>No data found</span>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     );
