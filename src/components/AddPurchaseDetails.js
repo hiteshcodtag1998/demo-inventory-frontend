@@ -3,12 +3,15 @@ import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
+import { Button } from "@mui/material";
+import AddBrand from "./AddBrand";
 
 export default function AddPurchaseDetails({
   addSaleModalSetting,
   products,
   handlePageUpdate,
-  authContext
+  authContext,
+  brands
 }) {
   const [purchase, setPurchase] = useState({
     userID: authContext.user,
@@ -19,6 +22,7 @@ export default function AddPurchaseDetails({
   });
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
+  const [showBrandModal, setBrandModal] = useState(false);
 
   // Handling Input Change for input fields
   const handleInputChange = (key, value) => {
@@ -40,6 +44,10 @@ export default function AddPurchaseDetails({
         addSaleModalSetting();
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
+
+  const handleOpenBrand = () => {
+    setBrandModal(true)
   };
 
   return (
@@ -103,19 +111,16 @@ export default function AddPurchaseDetails({
                               id="productID"
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               name="productID"
-                              onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
-                              }
+                              onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                             >
                               <option selected="">Select Products</option>
-                              {products.map((element, index) => {
-                                return (
-                                  <option key={element._id} value={element._id}>
-                                    {element.name}
-                                  </option>
-                                );
-                              })}
+                              {products.map((element, index) => (
+                                <option key={element._id} value={element._id}>
+                                  {element.name}
+                                </option>
+                              ))}
                             </select>
+
                           </div>
                           <div>
                             <label
@@ -138,6 +143,44 @@ export default function AddPurchaseDetails({
                           </div>
                           <div>
                             <label
+                              htmlFor="supplierName"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Supplier Name
+                            </label>
+                            <input
+                              type="text"
+                              name="supplierName"
+                              id="supplierName"
+                              value={purchase.supplierName}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="Enter Supplier Name"
+                            />
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="storeName"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Store Name
+                            </label>
+                            <input
+                              type="text"
+                              name="storeName"
+                              id="storeName"
+                              value={purchase.storeName}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="Enter Store Name"
+                            />
+                          </div>
+                          {/* <div>
+                            <label
                               htmlFor="totalPurchaseAmount"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
@@ -154,6 +197,27 @@ export default function AddPurchaseDetails({
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="$299"
                             />
+                          </div> */}
+                          <div>
+                            <label
+                              htmlFor="brandID"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Brand Name
+                            </label>
+                            <select
+                              id="brandID"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              name="brandID"
+                              onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                            >
+                              <option selected="">Select Brand</option>
+                              {brands.map((element, index) => (
+                                <option key={element._id} value={element._id}>
+                                  {element.name}
+                                </option>
+                              ))}
+                            </select>
                           </div>
                           <div className="h-fit w-fit">
                             {/* <Datepicker
@@ -204,6 +268,9 @@ export default function AddPurchaseDetails({
                             </svg>
                             Delete
                           </button> */}
+                          <Button className="pt-10" onClick={handleOpenBrand} variant="contained" color="secondary">
+                            Add Brand
+                          </Button>
                         </div>
                       </form>
                     </div>
@@ -226,6 +293,12 @@ export default function AddPurchaseDetails({
                     Cancel
                   </button>
                 </div>
+                {showBrandModal && (
+                  <AddBrand
+                    addBrandModalSetting={() => { setBrandModal(false) }}
+                    handlePageUpdate={handlePageUpdate}
+                  />
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>

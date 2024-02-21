@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { RxDashboard } from "react-icons/rx";
 import { BiPurchaseTag } from "react-icons/bi";
 import { FcSalesPerformance } from "react-icons/fc";
-import { MdHistory, MdOutlineInventory, MdOutlineStorefront } from "react-icons/md";
+import { MdHistory, MdOutlineInventory, MdOutlineStorefront, MdOutlineWarehouse } from "react-icons/md";
 
 function SideMenu() {
   const localStorageData = JSON.parse(localStorage.getItem("user"));
@@ -45,7 +45,22 @@ function SideMenu() {
             <FcSalesPerformance />
             <span className="text-sm font-medium"> Sales</span>
           </Link>
+          <Link
+            to="/sales"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+          >
+            <FcSalesPerformance />
+            <span className="text-sm font-medium"> Write Off</span>
+          </Link>
+          <Link
+            to="/warehouse"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+          >
+            <MdOutlineWarehouse />
+            <span className="text-sm font-medium"> Warehouses</span>
+          </Link>
 
+          {/* Comment for future ref
           <details className="group [&_summary::-webkit-details-marker]:hidden">
             <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
               <Link to="/manage-store">
@@ -55,7 +70,7 @@ function SideMenu() {
                 </div>
               </Link>
             </summary>
-          </details>
+          </details> */}
 
           <details className="group [&_summary::-webkit-details-marker]:hidden">
             <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">

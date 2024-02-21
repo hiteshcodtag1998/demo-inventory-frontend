@@ -8,6 +8,7 @@ function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
   const [sales, setAllSalesData] = useState([]);
   const [products, setAllProducts] = useState([]);
+  const [brands, setAllBrands] = useState([]);
   const [stores, setAllStores] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
@@ -18,6 +19,7 @@ function Sales() {
     fetchSalesData();
     fetchProductsData();
     fetchStoresData();
+    fetchBrandData();
   }, [updatePage]);
 
   // Fetching Data of All Sales
@@ -40,6 +42,18 @@ function Sales() {
       .then((response) => response.json())
       .then((data) => {
         setAllProducts(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
+
+  // Fetching Data of All Brrand items
+  const fetchBrandData = () => {
+    fetch(`http://localhost:4000/api/brand/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllBrands(data);
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
@@ -73,6 +87,7 @@ function Sales() {
             addSaleModalSetting={addSaleModalSetting}
             products={products}
             stores={stores}
+            brands={brands}
             handlePageUpdate={handlePageUpdate}
             authContext={authContext}
           />
@@ -99,18 +114,24 @@ function Sales() {
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Product Name
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Store Name
-                </th>
+                </th> */}
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Stock Sold
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Sales Date
+                  Supplier Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Total Sale Amount
+                  Store Name
                 </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Sales Date
+                </th>
+                {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Total Sale Amount
+                </th> */}
               </tr>
             </thead>
 
@@ -130,18 +151,24 @@ function Sales() {
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element.ProductID?.name}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.StoreID?.name}
-                    </td>
+                    </td> */}
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.StockSold}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.SupplierName || ""}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.StoreName || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.SaleDate}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalSaleAmount}
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}

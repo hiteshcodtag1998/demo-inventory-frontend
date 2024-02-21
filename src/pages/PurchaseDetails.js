@@ -7,6 +7,7 @@ import { toastMessage } from "../utils/handler";
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
   const [purchase, setAllPurchaseData] = useState([]);
+  const [brands, setAllBrands] = useState([]);
   const [products, setAllProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
@@ -16,6 +17,7 @@ function PurchaseDetails() {
   useEffect(() => {
     fetchPurchaseData();
     fetchProductsData();
+    fetchBrandData();
   }, [updatePage]);
 
   // Fetching Data of All Purchase items
@@ -26,6 +28,18 @@ function PurchaseDetails() {
       .then((response) => response.json())
       .then((data) => {
         setAllPurchaseData(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
+
+  // Fetching Data of All Brrand items
+  const fetchBrandData = () => {
+    fetch(`http://localhost:4000/api/brand/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllBrands(data);
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
@@ -60,6 +74,7 @@ function PurchaseDetails() {
           <AddPurchaseDetails
             addSaleModalSetting={addSaleModalSetting}
             products={products}
+            brands={brands}
             handlePageUpdate={handlePageUpdate}
             authContext={authContext}
           />
@@ -90,11 +105,20 @@ function PurchaseDetails() {
                   Quantity Purchased
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Purchase Date
+                  Supplier Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Total Purchase Amount
+                  Store Name
                 </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Brand Name
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Purchase Date
+                </th>
+                {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Total Purchase Amount
+                </th> */}
               </tr>
             </thead>
 
@@ -112,10 +136,19 @@ function PurchaseDetails() {
                 return (
                   <tr key={element._id}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.ProductID?.name}
+                      {element.ProductID?.name || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.QuantityPurchased}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.SupplierName || ""}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.StoreName || ""}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.BrandID?.name || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {new Date(element.PurchaseDate).toLocaleDateString() ==
@@ -123,9 +156,9 @@ function PurchaseDetails() {
                         ? "Today"
                         : element.PurchaseDate}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}

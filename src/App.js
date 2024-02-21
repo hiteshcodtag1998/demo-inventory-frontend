@@ -17,6 +17,7 @@ import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import History from "./pages/History";
+import Warehouse from "./pages/Warehouse";
 
 const App = () => {
 
@@ -81,6 +82,7 @@ const App = () => {
             <Route path="/sales" element={<Sales />} />
             <Route path="/manage-store" element={<Store />} />
             <Route path="/history" element={<History />} />
+            <Route path="/warehouse" element={<Warehouse />} />
           </Route>
           <Route path="*" element={<NoPageFound />} />
         </Routes>
