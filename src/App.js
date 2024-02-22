@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import History from "./pages/History";
 import Warehouse from "./pages/Warehouse";
 import WriteOffDetails from "./pages/WriteOff";
+import TransferStockDetails from "./pages/TransferStock";
 
 const App = () => {
 
@@ -85,6 +86,8 @@ const App = () => {
             <Route path="/history" element={<History />} />
             <Route path="/warehouse" element={<Warehouse />} />
             <Route path="/writeoff" element={<WriteOffDetails />} />
+            <Route path="/transferstock" element={<TransferStockDetails />} />
+
           </Route>
           <Route path="*" element={<NoPageFound />} />
         </Routes>
