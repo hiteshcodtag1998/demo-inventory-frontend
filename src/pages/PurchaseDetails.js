@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from 'axios'
 import AddPurchaseDetails from "../components/AddPurchaseDetails";
 import AuthContext from "../AuthContext";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
+import { FaDownload } from "react-icons/fa6";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -67,6 +69,30 @@ function PurchaseDetails() {
     setUpdatePage(!updatePage);
   };
 
+  const handleDownload = async (data) => {
+    try {
+      console.log('handleDownload', handleDownload)
+      const response = await axios.post('http://localhost:4000/api/purchase/purchase-pdf-download', data, {
+        responseType: 'arraybuffer',
+      });
+      console.log('response', response)
+      // Assuming the server returns the PDF content as a blob
+      // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.open(url, '_blank');
+      // window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log('Error', error)
+    }
+  }
+
   return (
     <div className="col-span-12 lg:col-span-10  flex justify-center">
       <div className=" flex flex-col gap-5 w-11/12">
@@ -116,6 +142,9 @@ function PurchaseDetails() {
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Purchase Date
                 </th>
+                <th className="whitespace-nowrap text-left font-medium text-gray-900">
+                  Action
+                </th>
                 {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Total Purchase Amount
                 </th> */}
@@ -155,6 +184,14 @@ function PurchaseDetails() {
                         new Date().toLocaleDateString()
                         ? "Today"
                         : element.PurchaseDate}
+                    </td>
+                    <td>
+                      <span
+                        className="text-green-700 px-2 "
+
+                      >
+                        <FaDownload className="cursor-pointer" onClick={() => handleDownload(element)} />
+                      </span>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}

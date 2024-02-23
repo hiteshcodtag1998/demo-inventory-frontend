@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from 'axios'
 import AddSale from "../components/AddSale";
 import AuthContext from "../AuthContext";
 import { toastMessage } from "../utils/handler";
 import { TOAST_TYPE } from "../utils/constant";
+import { FaDownload } from "react-icons/fa6";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
@@ -69,6 +71,29 @@ function Sales() {
       });
   };
 
+  const handleDownload = async (data) => {
+    try {
+      const response = await axios.post('http://localhost:4000/api/sales/sale-pdf-download', data, {
+        responseType: 'arraybuffer',
+      });
+      console.log('response', response)
+      // Assuming the server returns the PDF content as a blob
+      // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.open(url, '_blank');
+      // window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log('Error', error)
+    }
+  }
+
   // Modal for Sale Add
   const addSaleModalSetting = () => {
     setShowSaleModal(!showSaleModal);
@@ -129,6 +154,9 @@ function Sales() {
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Sales Date
                 </th>
+                <th className="whitespace-nowrap text-left font-medium text-gray-900">
+                  Action
+                </th>
                 {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Total Sale Amount
                 </th> */}
@@ -165,6 +193,14 @@ function Sales() {
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.SaleDate}
+                    </td>
+                    <td>
+                      <span
+                        className="text-green-700 px-2 "
+
+                      >
+                        <FaDownload className="cursor-pointer" onClick={() => handleDownload(element)} />
+                      </span>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalSaleAmount}

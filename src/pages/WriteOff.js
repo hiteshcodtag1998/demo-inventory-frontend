@@ -3,6 +3,8 @@ import AuthContext from "../AuthContext";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import AddWriteOffDetails from "../components/AddWriteOff";
+import { FaDownload } from "react-icons/fa6";
+import axios from "axios";
 
 function WriteOffDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -67,6 +69,29 @@ function WriteOffDetails() {
         setUpdatePage(!updatePage);
     };
 
+    const handleDownload = async (data) => {
+        try {
+            const response = await axios.post('http://localhost:4000/api/writeoff/writeOff-pdf-download', data, {
+                responseType: 'arraybuffer',
+            });
+            console.log('response', response)
+            // Assuming the server returns the PDF content as a blob
+            // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'output.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.open(url, '_blank');
+            // window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.log('Error', error)
+        }
+    }
+
     return (
         <div className="col-span-12 lg:col-span-10  flex justify-center">
             <div className=" flex flex-col gap-5 w-11/12">
@@ -102,7 +127,7 @@ function WriteOffDetails() {
                                     Product Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Quantity Purchased
+                                    Stock WriteOff
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     Supplier Name
@@ -114,7 +139,10 @@ function WriteOffDetails() {
                                     Brand Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Purchase Date
+                                    WriteOff Date
+                                </th>
+                                <th className="whitespace-nowrap text-left font-medium text-gray-900">
+                                    Action
                                 </th>
                                 {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Total Purchase Amount
@@ -139,7 +167,7 @@ function WriteOffDetails() {
                                             {element.ProductID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            {element.QuantityPurchased}
+                                            {element.StockSold}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                                             {element?.SupplierName || ""}
@@ -151,10 +179,18 @@ function WriteOffDetails() {
                                             {element?.BrandID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            {new Date(element.PurchaseDate).toLocaleDateString() ==
+                                            {new Date(element.SaleDate).toLocaleDateString() ==
                                                 new Date().toLocaleDateString()
                                                 ? "Today"
-                                                : element.PurchaseDate}
+                                                : element.SaleDate}
+                                        </td>
+                                        <td>
+                                            <span
+                                                className="text-green-700 px-2 "
+
+                                            >
+                                                <FaDownload className="cursor-pointer" onClick={() => handleDownload(element)} />
+                                            </span>
                                         </td>
                                         {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}
