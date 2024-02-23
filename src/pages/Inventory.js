@@ -5,6 +5,7 @@ import { ROLES, TOAST_TYPE } from "../utils/constant";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import { toastMessage } from "../utils/handler";
 import { MdEdit, MdDeleteForever, MdOutlineHideSource } from "react-icons/md";
+import axios from 'axios'
 
 function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
@@ -103,11 +104,36 @@ function Inventory() {
     setOpen(false);
   };
 
+  const handleDownload = async () => {
+    try {
+      console.log('handleDownload', handleDownload)
+      const response = await axios.get('http://localhost:4000/api/product/product-pdf-download', {
+        responseType: 'arraybuffer',
+      });
+      console.log('response', response)
+      // Assuming the server returns the PDF content as a blob
+      // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.open(url, '_blank');
+      // window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log('Error', error)
+    }
+  }
+
   return (
     <div className="col-span-12 lg:col-span-10  flex justify-center">
       <div className=" flex flex-col gap-5 w-11/12">
         <div className="bg-white rounded p-3">
           <span className="font-semibold px-4">Overall Inventory</span>
+          <button onClick={() => handleDownload()}>download</button>
           <div className=" flex flex-col md:flex-row md:justify-start md:items-center">
             <div className="flex flex-col p-10  w-full  md:w-3/12">
               <span className="font-semibold text-blue-600 text-base">
@@ -241,6 +267,9 @@ function Inventory() {
                   Products
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Code
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Manufacturer
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
@@ -278,6 +307,9 @@ function Inventory() {
                   <tr key={element._id}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element.name}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element.productCode}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.manufacturer}

@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { RxDashboard } from "react-icons/rx";
-import { BiPurchaseTag } from "react-icons/bi";
+import { RiFileDamageFill } from "react-icons/ri";
 import { FcSalesPerformance } from "react-icons/fc";
-import { MdHistory, MdOutlineInventory, MdOutlineStorefront, MdOutlineWarehouse } from "react-icons/md";
+import { BiPurchaseTag, BiTransfer } from "react-icons/bi";
+import { MdHistory, MdOutlineInventory, MdOutlineWarehouse } from "react-icons/md";
 
 function SideMenu() {
   const localStorageData = JSON.parse(localStorage.getItem("user"));
@@ -49,14 +50,14 @@ function SideMenu() {
             to="/transferstock"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           >
-            <FcSalesPerformance />
+            <BiTransfer />
             <span className="text-sm font-medium"> Transfer Stock</span>
           </Link>
           <Link
             to="/writeoff"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           >
-            <FcSalesPerformance />
+            <RiFileDamageFill />
             <span className="text-sm font-medium"> Write Off</span>
           </Link>
           <Link

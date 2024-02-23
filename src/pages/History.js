@@ -31,8 +31,9 @@ function History() {
                             key={element._id}
                         >
                             <div className="flex flex-col gap-3 justify-between items-start">
-                                <span>{element?.description ? `Description: ${element.description}` : ""}</span>
-                                <span>{element?.notes ? `Notes: ${element.notes}` : ""}</span>
+                                {element?.description ? <span>Description: {element.description}</span> : ""}
+                                {element?.notes ? <span>Notes: ${element.notes}</span> : ""}
+                                {element?.productCode ? <span>ProductCode: {element.productCode}</span> : ""}
                                 <span>{element?.createdAt ? new Date(element?.createdAt).toLocaleString() : ""}</span>
                             </div>
                         </div>
