@@ -75,7 +75,6 @@ function PurchaseDetails() {
       const response = await axios.post('http://localhost:4000/api/purchase/purchase-pdf-download', data, {
         responseType: 'arraybuffer',
       });
-      console.log('response', response)
       // Assuming the server returns the PDF content as a blob
       // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
 

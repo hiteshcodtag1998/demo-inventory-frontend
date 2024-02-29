@@ -17,11 +17,13 @@ function Inventory() {
   const [selectedProduct, setSelectedProduct] = useState();
   const [open, setOpen] = useState(false);
   const [dialogData, setDialogData] = useState();
+  const [brands, setAllBrands] = useState([]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     fetchProductsData();
     fetchSalesData();
+    fetchBrandData();
   }, [updatePage]);
 
   // Fetching Data of All Products
@@ -101,6 +103,18 @@ function Inventory() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  // Fetching Data of All Brrand items
+  const fetchBrandData = () => {
+    fetch(`http://localhost:4000/api/brand/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllBrands(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   return (
@@ -193,12 +207,14 @@ function Inventory() {
 
         {showProductModal && (
           <AddProduct
+            brands={brands}
             addProductModalSetting={addProductModalSetting}
             handlePageUpdate={handlePageUpdate}
           />
         )}
         {showUpdateModal && (
           <UpdateProduct
+            brands={brands}
             updateProductData={updateProduct}
             updateModalSetting={updateProductModalSetting}
             fetchProductsData={fetchProductsData}
@@ -239,13 +255,13 @@ function Inventory() {
             <thead>
               <tr>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Products
+                  Product
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Code
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Manufacturer
+                  Brand Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Stock
@@ -253,9 +269,9 @@ function Inventory() {
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Description
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Availibility
-                </th>
+                </th> */}
                 {
                   myLoginUser?.roleID?.name === ROLES.SUPER_ADMIN && <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                     Hide
@@ -287,7 +303,7 @@ function Inventory() {
                       {element.productCode}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.manufacturer}
+                      {element?.BrandID?.name}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.stock}
@@ -295,9 +311,9 @@ function Inventory() {
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.description}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.stock > 0 ? `In Stock (${element.stock})` : "Not in Stock"}
-                    </td>
+                    </td> */}
                     {
                       myLoginUser?.roleID?.name === ROLES.SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                         {element?.isActive ? <span
