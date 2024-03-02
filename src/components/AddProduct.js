@@ -28,10 +28,8 @@ export default function AddProduct({
   const [showBrandModal, setBrandModal] = useState(false);
 
   const handleInputChange = (index, key, value) => {
-    console.log('key, value', key, value)
     const updatedProducts = [...products];
     updatedProducts[index] = { ...updatedProducts[index], [key]: value };
-    console.log('updatedProducts', updatedProducts)
     setProducts(updatedProducts);
   };
 
