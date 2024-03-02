@@ -5,6 +5,7 @@ import { toastMessage } from "../utils/handler";
 import AddWriteOffDetails from "../components/AddWriteOff";
 import { FaDownload } from "react-icons/fa6";
 import axios from "axios";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 function WriteOffDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -12,6 +13,7 @@ function WriteOffDetails() {
     const [brands, setAllBrands] = useState([]);
     const [products, setAllProducts] = useState([]);
     const [updatePage, setUpdatePage] = useState(true);
+    const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
     const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
     const authContext = useContext(AuthContext);
@@ -69,12 +71,17 @@ function WriteOffDetails() {
         setUpdatePage(!updatePage);
     };
 
-    const handleDownload = async (data) => {
+    const handleDownload = async (data, index) => {
         try {
+            // Set the loader to true for the specific index
+            setPdfBtnLoaderIndexes(prevIndexes => {
+                const newIndexes = [...prevIndexes];
+                newIndexes[index] = true;
+                return newIndexes;
+            });
             const response = await axios.post('http://localhost:4000/api/writeoff/writeOff-pdf-download', data, {
                 responseType: 'arraybuffer',
             });
-            console.log('response', response)
             // Assuming the server returns the PDF content as a blob
             // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
 
@@ -86,8 +93,20 @@ function WriteOffDetails() {
             a.click();
             document.body.removeChild(a);
             window.open(url, '_blank');
+            // After download is complete, set the loader back to false for the specific index
+            setPdfBtnLoaderIndexes(prevIndexes => {
+                const newIndexes = [...prevIndexes];
+                newIndexes[index] = false;
+                return newIndexes;
+            });
             // window.URL.revokeObjectURL(url);
         } catch (error) {
+            // After download is complete, set the loader back to false for the specific index
+            setPdfBtnLoaderIndexes(prevIndexes => {
+                const newIndexes = [...prevIndexes];
+                newIndexes[index] = false;
+                return newIndexes;
+            });
             console.log('Error', error)
         }
     }
@@ -185,12 +204,15 @@ function WriteOffDetails() {
                                                 : element.SaleDate}
                                         </td>
                                         <td>
-                                            <span
-                                                className="text-green-700 px-2 "
-
-                                            >
-                                                <FaDownload className="cursor-pointer" onClick={() => handleDownload(element)} />
-                                            </span>
+                                            <Tooltip title="Download WriteOff Note" arrow>
+                                                <span
+                                                    className="text-green-700 px-2 flex"
+                                                >
+                                                    {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                                                        <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                                                    }
+                                                </span>
+                                            </Tooltip>
                                         </td>
                                         {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}

@@ -118,7 +118,7 @@ function Dashboard() {
 
   // Fetching all stores data
   const fetchStoresData = () => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}store/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}warehouse/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -272,7 +272,7 @@ function Dashboard() {
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
-              Total Stores
+              Total Warehouses
             </strong>
 
             <p>

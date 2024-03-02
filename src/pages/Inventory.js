@@ -5,6 +5,7 @@ import { ROLES, TOAST_TYPE } from "../utils/constant";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import { toastMessage } from "../utils/handler";
 import { MdEdit, MdDeleteForever, MdOutlineHideSource } from "react-icons/md";
+import { Tooltip } from "@mui/material";
 
 function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
@@ -124,7 +125,7 @@ function Inventory() {
           <span className="font-semibold px-4">Overall Inventory</span>
 
           <div className=" flex flex-col md:flex-row md:justify-start md:items-center">
-            <div className="flex flex-col p-10  w-full  md:w-3/12">
+            <div className="flex flex-col p-10 w-full md:w-3/12">
               <span className="font-semibold text-blue-600 text-base">
                 Total Products
               </span>
@@ -135,7 +136,7 @@ function Inventory() {
                 Last 7 days
               </span>
             </div>
-            <div className="flex flex-col gap-3 p-10   w-full  md:w-3/12 sm:border-y-2  md:border-x-2 md:border-y-0">
+            {/* <div className="flex flex-col gap-3 p-10   w-full  md:w-3/12 sm:border-y-2  md:border-x-2 md:border-y-0">
               <span className="font-semibold text-yellow-600 text-base">
                 Stores
               </span>
@@ -157,7 +158,7 @@ function Inventory() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  sm:border-y-2 md:border-x-2 md:border-y-0">
               <span className="font-semibold text-purple-600 text-base">
                 Top Selling
@@ -337,26 +338,29 @@ function Inventory() {
 
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       <div className="flex">
-
-                        <span
-                          className="text-green-700 cursor-pointer"
-                          onClick={() => updateProductModalSetting(element)}
-                        >
-                          <MdEdit />
-                        </span>
-                        <span
-                          className="text-red-600 px-2 cursor-pointer"
-                          onClick={() => {
-                            handleClickOpen();
-                            setSelectedProduct(element)
-                            setDialogData({
-                              title: 'Are you sure want to delete?',
-                              btnSecText: 'Delete'
-                            })
-                          }}
-                        >
-                          <MdDeleteForever width={50} height={50} />
-                        </span>
+                        <Tooltip title="Edit" arrow>
+                          <span
+                            className="text-green-700 cursor-pointer"
+                            onClick={() => updateProductModalSetting(element)}
+                          >
+                            <MdEdit />
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow>
+                          <span
+                            className="text-red-600 px-2 cursor-pointer"
+                            onClick={() => {
+                              handleClickOpen();
+                              setSelectedProduct(element)
+                              setDialogData({
+                                title: 'Are you sure want to delete?',
+                                btnSecText: 'Delete'
+                              })
+                            }}
+                          >
+                            <MdDeleteForever width={50} height={50} />
+                          </span>
+                        </Tooltip>
                       </div>
                     </td>
 

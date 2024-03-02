@@ -5,6 +5,7 @@ import AuthContext from "../AuthContext";
 import { toastMessage } from "../utils/handler";
 import { TOAST_TYPE } from "../utils/constant";
 import { FaDownload } from "react-icons/fa6";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
@@ -13,6 +14,7 @@ function Sales() {
   const [brands, setAllBrands] = useState([]);
   const [stores, setAllStores] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
+  const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   const authContext = useContext(AuthContext);
@@ -71,8 +73,15 @@ function Sales() {
       });
   };
 
-  const handleDownload = async (data) => {
+  const handleDownload = async (data, index) => {
     try {
+      // Set the loader to true for the specific index
+      setPdfBtnLoaderIndexes(prevIndexes => {
+        const newIndexes = [...prevIndexes];
+        newIndexes[index] = true;
+        return newIndexes;
+      });
+
       const response = await axios.post('http://localhost:4000/api/sales/sale-pdf-download', data, {
         responseType: 'arraybuffer',
       });
@@ -88,8 +97,18 @@ function Sales() {
       a.click();
       document.body.removeChild(a);
       window.open(url, '_blank');
+      setPdfBtnLoaderIndexes(prevIndexes => {
+        const newIndexes = [...prevIndexes];
+        newIndexes[index] = false;
+        return newIndexes;
+      });
       // window.URL.revokeObjectURL(url);
     } catch (error) {
+      setPdfBtnLoaderIndexes(prevIndexes => {
+        const newIndexes = [...prevIndexes];
+        newIndexes[index] = false;
+        return newIndexes;
+      });
       console.log('Error', error)
     }
   }
@@ -149,7 +168,10 @@ function Sales() {
                   Supplier Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Store Name
+                  Warehouse Name
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Brand Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Sales Date
@@ -191,16 +213,25 @@ function Sales() {
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element?.StoreName || ""}
                     </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.BrandID?.name || ""}
+                    </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.SaleDate}
+                      {new Date(element.SaleDate).toLocaleDateString() ==
+                        new Date().toLocaleDateString()
+                        ? "Today"
+                        : element.SaleDate}
                     </td>
                     <td>
-                      <span
-                        className="text-green-700 px-2 "
-
-                      >
-                        <FaDownload className="cursor-pointer" onClick={() => handleDownload(element)} />
-                      </span>
+                      <Tooltip title="Download Sale Note" arrow>
+                        <span
+                          className="text-green-700 px-2 flex"
+                        >
+                          {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                            <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                          }
+                        </span>
+                      </Tooltip>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalSaleAmount}

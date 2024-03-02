@@ -35,10 +35,9 @@ export default function AddProduct({
 
   const addProduct = () => {
     if (products?.length === 0) {
-      toastMessage("Please add product", TOAST_TYPE.TYPE_ERROR)
+      toastMessage("Please add product form", TOAST_TYPE.TYPE_ERROR)
       return;
     }
-    console.log('products', products)
 
     // Check if any product field is null or empty
     const hasEmptyField = products.some(

@@ -36,6 +36,25 @@ export default function AddSale({
 
   // POST Data
   const addSale = () => {
+
+    if (sale?.length === 0) {
+      toastMessage("Please add sale", TOAST_TYPE.TYPE_ERROR)
+      return;
+    }
+
+    // Check if any product field is null or empty
+    const hasEmptyField = sale.some(
+      (p) =>
+        !p?.productID ||
+        !p?.stockSold ||
+        !p?.saleDate
+    )
+
+    if (hasEmptyField) {
+      toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
+      return;
+    }
+
     fetch("http://localhost:4000/api/sales/add", {
       method: "POST",
       headers: {
@@ -215,7 +234,7 @@ export default function AddSale({
                                 htmlFor="storeName"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                               >
-                                Store Name
+                                Warehouse Name
                               </label>
                               <input
                                 type="text"
@@ -226,7 +245,7 @@ export default function AddSale({
                                   handleInputChange(index, e.target.name, e.target.value)
                                 }
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Enter Store Name"
+                                placeholder="Enter Warehouse Name"
                               />
                             </div>
 

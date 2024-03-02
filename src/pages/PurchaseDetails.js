@@ -5,6 +5,7 @@ import AuthContext from "../AuthContext";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { FaDownload } from "react-icons/fa6";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -12,6 +13,7 @@ function PurchaseDetails() {
   const [brands, setAllBrands] = useState([]);
   const [products, setAllProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
+  const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   const authContext = useContext(AuthContext);
@@ -69,9 +71,15 @@ function PurchaseDetails() {
     setUpdatePage(!updatePage);
   };
 
-  const handleDownload = async (data) => {
+  const handleDownload = async (data, index) => {
     try {
-      console.log('handleDownload', handleDownload)
+      // Set the loader to true for the specific index
+      setPdfBtnLoaderIndexes(prevIndexes => {
+        const newIndexes = [...prevIndexes];
+        newIndexes[index] = true;
+        return newIndexes;
+      });
+
       const response = await axios.post('http://localhost:4000/api/purchase/purchase-pdf-download', data, {
         responseType: 'arraybuffer',
       });
@@ -86,8 +94,20 @@ function PurchaseDetails() {
       a.click();
       document.body.removeChild(a);
       window.open(url, '_blank');
+      // After download is complete, set the loader back to false for the specific index
+      setPdfBtnLoaderIndexes(prevIndexes => {
+        const newIndexes = [...prevIndexes];
+        newIndexes[index] = false;
+        return newIndexes;
+      });
       // window.URL.revokeObjectURL(url);
     } catch (error) {
+      // After download is complete, set the loader back to false for the specific index
+      setPdfBtnLoaderIndexes(prevIndexes => {
+        const newIndexes = [...prevIndexes];
+        newIndexes[index] = false;
+        return newIndexes;
+      });
       console.log('Error', error)
     }
   }
@@ -133,7 +153,7 @@ function PurchaseDetails() {
                   Supplier Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Store Name
+                  Warehouse Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Brand Name
@@ -185,12 +205,15 @@ function PurchaseDetails() {
                         : element.PurchaseDate}
                     </td>
                     <td>
-                      <span
-                        className="text-green-700 px-2 "
-
-                      >
-                        <FaDownload className="cursor-pointer" onClick={() => handleDownload(element)} />
-                      </span>
+                      <Tooltip title="Download Purchase Note" arrow>
+                        <span
+                          className="text-green-700 px-2 flex"
+                        >
+                          {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                            <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                          }
+                        </span>
+                      </Tooltip>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}
