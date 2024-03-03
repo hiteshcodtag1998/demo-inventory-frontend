@@ -11,7 +11,8 @@ export default function AddPurchaseDetails({
   products,
   handlePageUpdate,
   authContext,
-  brands
+  brands,
+  warehouses
 }) {
   const [purchase, setPurchase] = useState([{
     userID: authContext.user,
@@ -19,6 +20,7 @@ export default function AddPurchaseDetails({
     quantityPurchased: "",
     purchaseDate: "",
     totalPurchaseAmount: "",
+    warehouseID: ""
   }]);
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -27,6 +29,10 @@ export default function AddPurchaseDetails({
   // Handling Input Change for input fields
   const handleInputChange = (index, key, value) => {
     const updatedProducts = [...purchase];
+    if (key === 'productID') {
+      const brandInfo = products?.find(p => p._id === value)?.BrandID;
+      updatedProducts[index] = { ...updatedProducts[index], ['brandID']: brandInfo?._id };
+    }
     updatedProducts[index] = { ...updatedProducts[index], [key]: value };
     setPurchase(updatedProducts);
   };
@@ -222,7 +228,34 @@ export default function AddPurchaseDetails({
                                 placeholder="Enter Supplier Name"
                               />
                             </div>
+
                             <div>
+                              <label
+                                htmlFor="warehouseID"
+                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              >
+                                Warehouse Name
+                              </label>
+                              <select
+                                id="warehouseID"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                name="warehouseID"
+                                onChange={(e) =>
+                                  handleInputChange(index, e.target.name, e.target.value)
+                                }
+                              >
+                                <option selected="">Select Warehouse</option>
+                                {warehouses.map((element, index) => {
+                                  return (
+                                    <option key={element._id} value={element._id}>
+                                      {element.name}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            </div>
+
+                            {/* <div>
                               <label
                                 htmlFor="storeName"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -240,7 +273,7 @@ export default function AddPurchaseDetails({
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Enter Warehouse Name"
                               />
-                            </div>
+                            </div> */}
                             {/* <div>
                             <label
                               htmlFor="totalPurchaseAmount"
@@ -267,10 +300,13 @@ export default function AddPurchaseDetails({
                               >
                                 Brand Name
                               </label>
+                              {console.log('sele', brands?.find(b => b._id === purchase[index]?.brandID)?.name)}
                               <select
                                 id="brandID"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 name="brandID"
+                                value={purchase[index]?.brandID || ''}
+                                disabled={true}
                                 onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
                               >
                                 <option selected="">Select Brand</option>
@@ -281,11 +317,11 @@ export default function AddPurchaseDetails({
                                 ))}
                               </select>
                             </div>
-                            <div className="mt-7">
+                            {/* <div className="mt-7">
                               <Button onClick={handleOpenBrand} variant="contained" color="secondary">
                                 Add Brand
                               </Button>
-                            </div>
+                            </div> */}
                             <div className="h-fit w-full">
                               {/* <Datepicker
                               onChange={handleChange}

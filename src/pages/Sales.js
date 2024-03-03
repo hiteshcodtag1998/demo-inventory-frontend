@@ -13,6 +13,7 @@ function Sales() {
   const [products, setAllProducts] = useState([]);
   const [brands, setAllBrands] = useState([]);
   const [stores, setAllStores] = useState([]);
+  const [warehouses, setAllWarehouses] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
   const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
@@ -24,6 +25,7 @@ function Sales() {
     fetchProductsData();
     fetchStoresData();
     fetchBrandData();
+    fetchWarehouseData();
   }, [updatePage]);
 
   // Fetching Data of All Sales
@@ -71,6 +73,18 @@ function Sales() {
       .then((data) => {
         setAllStores(data);
       });
+  };
+
+  // Fetching Data of All Warehouse items
+  const fetchWarehouseData = () => {
+    fetch(`http://localhost:4000/api/warehouse/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllWarehouses(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
   const handleDownload = async (data, index) => {
@@ -134,6 +148,7 @@ function Sales() {
             brands={brands}
             handlePageUpdate={handlePageUpdate}
             authContext={authContext}
+            warehouses={warehouses}
           />
         )}
         {/* Table  */}
@@ -211,7 +226,7 @@ function Sales() {
                       {element?.SupplierName || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element?.StoreName || ""}
+                      {element?.warehouseID?.name || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element?.BrandID?.name || ""}

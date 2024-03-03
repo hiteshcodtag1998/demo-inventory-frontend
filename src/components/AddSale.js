@@ -12,7 +12,8 @@ export default function AddSale({
   stores,
   handlePageUpdate,
   authContext,
-  brands
+  brands,
+  warehouses
 }) {
   const [sale, setSale] = useState([{
     userID: authContext.user,
@@ -21,6 +22,7 @@ export default function AddSale({
     stockSold: "",
     saleDate: "",
     totalSaleAmount: "",
+    warehouseID: ""
   }]);
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -30,6 +32,10 @@ export default function AddSale({
   // Handling Input Change for input fields
   const handleInputChange = (index, key, value) => {
     const updatedSales = [...sale];
+    if (key === 'productID') {
+      const brandInfo = products?.find(p => p._id === value)?.BrandID;
+      updatedSales[index] = { ...updatedSales[index], ['brandID']: brandInfo?._id };
+    }
     updatedSales[index] = { ...updatedSales[index], [key]: value };
     setSale(updatedSales);
   };
@@ -231,22 +237,28 @@ export default function AddSale({
                             </div>
                             <div>
                               <label
-                                htmlFor="storeName"
+                                htmlFor="warehouseID"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                               >
                                 Warehouse Name
                               </label>
-                              <input
-                                type="text"
-                                name="storeName"
-                                id="storeName"
-                                value={sale.storeName}
+                              <select
+                                id="warehouseID"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                name="warehouseID"
                                 onChange={(e) =>
                                   handleInputChange(index, e.target.name, e.target.value)
                                 }
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Enter Warehouse Name"
-                              />
+                              >
+                                <option selected="">Select Warehouse</option>
+                                {warehouses.map((element, index) => {
+                                  return (
+                                    <option key={element._id} value={element._id}>
+                                      {element.name}
+                                    </option>
+                                  );
+                                })}
+                              </select>
                             </div>
 
                             {/*Code for future ref
@@ -305,6 +317,8 @@ export default function AddSale({
                                 id="brandID"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 name="brandID"
+                                value={sale[index]?.brandID || ''}
+                                disabled={true}
                                 onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
                               >
                                 <option selected="">Select Brand</option>
@@ -315,11 +329,11 @@ export default function AddSale({
                                 ))}
                               </select>
                             </div>
-                            <div className="mt-7">
+                            {/* <div className="mt-7">
                               <Button className="pt-10" onClick={handleOpenBrand} variant="contained" color="secondary">
                                 Add Brand
                               </Button>
-                            </div>
+                            </div> */}
                             <div className="h-fit w-full">
                               {/* <Datepicker
                               onChange={handleChange}

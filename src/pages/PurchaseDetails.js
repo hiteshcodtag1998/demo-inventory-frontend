@@ -11,6 +11,7 @@ function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
   const [purchase, setAllPurchaseData] = useState([]);
   const [brands, setAllBrands] = useState([]);
+  const [warehouses, setAllWarehouses] = useState([]);
   const [products, setAllProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
   const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
@@ -22,6 +23,7 @@ function PurchaseDetails() {
     fetchPurchaseData();
     fetchProductsData();
     fetchBrandData();
+    fetchWarehouseData();
   }, [updatePage]);
 
   // Fetching Data of All Purchase items
@@ -44,6 +46,18 @@ function PurchaseDetails() {
       .then((response) => response.json())
       .then((data) => {
         setAllBrands(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
+
+  // Fetching Data of All Warehouse items
+  const fetchWarehouseData = () => {
+    fetch(`http://localhost:4000/api/warehouse/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllWarehouses(data);
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
@@ -122,6 +136,7 @@ function PurchaseDetails() {
             brands={brands}
             handlePageUpdate={handlePageUpdate}
             authContext={authContext}
+            warehouses={warehouses}
           />
         )}
         {/* Table  */}
@@ -193,7 +208,7 @@ function PurchaseDetails() {
                       {element?.SupplierName || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element?.StoreName || ""}
+                      {element?.warehouseID?.name || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element?.BrandID?.name || ""}

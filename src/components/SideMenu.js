@@ -68,13 +68,14 @@ function SideMenu() {
             <MdOutlineWarehouse />
             <span className="text-sm font-medium"> Warehouses</span>
           </Link>
+          {/* For future ref
           <Link
             to="/report"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           >
             <SlDocs />
             <span className="text-sm font-medium"> Report</span>
-          </Link>
+          </Link> */}
 
           {/* Comment for future ref
           <details className="group [&_summary::-webkit-details-marker]:hidden">
