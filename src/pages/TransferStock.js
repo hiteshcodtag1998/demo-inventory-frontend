@@ -10,6 +10,7 @@ function TransferStockDetails() {
     const [brands, setAllBrands] = useState([]);
     const [products, setAllProducts] = useState([]);
     const [updatePage, setUpdatePage] = useState(true);
+    const [warehouses, setAllWarehouses] = useState([]);
     const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
     const authContext = useContext(AuthContext);
@@ -18,6 +19,7 @@ function TransferStockDetails() {
         fetchPurchaseData();
         fetchProductsData();
         fetchBrandData();
+        fetchWarehouseData();
     }, [updatePage]);
 
     // Fetching Data of All Purchase items
@@ -28,6 +30,18 @@ function TransferStockDetails() {
             .then((response) => response.json())
             .then((data) => {
                 setAllPurchaseData(data);
+            })
+            .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+    };
+
+    // Fetching Data of All Warehouse items
+    const fetchWarehouseData = () => {
+        fetch(`http://localhost:4000/api/warehouse/get`, {
+            headers: { role: myLoginUser?.roleID?.name }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setAllWarehouses(data);
             })
             .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
     };
@@ -77,6 +91,7 @@ function TransferStockDetails() {
                         brands={brands}
                         handlePageUpdate={handlePageUpdate}
                         authContext={authContext}
+                        warehouses={warehouses}
                     />
                 )}
                 {/* Table  */}

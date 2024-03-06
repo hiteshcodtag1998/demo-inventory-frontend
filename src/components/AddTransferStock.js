@@ -11,7 +11,8 @@ export default function AddTransferStockDetails({
     products,
     handlePageUpdate,
     authContext,
-    brands
+    brands,
+    warehouses
 }) {
     const [purchase, setPurchase] = useState({
         userID: authContext.user,
@@ -19,6 +20,9 @@ export default function AddTransferStockDetails({
         quantityPurchased: "",
         purchaseDate: "",
         totalPurchaseAmount: "",
+        fromWarehouseID: "",
+        toWarehouseID: "",
+        brandID: ""
     });
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
@@ -26,7 +30,15 @@ export default function AddTransferStockDetails({
 
     // Handling Input Change for input fields
     const handleInputChange = (key, value) => {
-        setPurchase({ ...purchase, [key]: value });
+        let updatedTransferData = { ...purchase };
+        if (key === 'productID') {
+            const brandInfo = products?.find(p => p._id === value)?.BrandID;
+            updatedTransferData = { ...updatedTransferData, brandID: brandInfo?._id };
+        }
+
+        updatedTransferData = { ...updatedTransferData, [key]: value }
+
+        setPurchase(updatedTransferData);
     };
 
     // POST Data
@@ -141,7 +153,7 @@ export default function AddTransferStockDetails({
                                                             placeholder="0 - 999"
                                                         />
                                                     </div>
-                                                    <div>
+                                                    {/* <div>
                                                         <label
                                                             htmlFor="supplierName"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -159,8 +171,8 @@ export default function AddTransferStockDetails({
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="Enter Supplier Name"
                                                         />
-                                                    </div>
-                                                    <div>
+                                                    </div> */}
+                                                    {/* <div>
                                                         <label
                                                             htmlFor="storeName"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -178,8 +190,61 @@ export default function AddTransferStockDetails({
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="Enter Store Name"
                                                         />
-                                                    </div>
+                                                    </div> */}
+
                                                     <div>
+                                                        <label
+                                                            htmlFor="fromWarehouseID"
+                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                        >
+                                                            From Warehouse
+                                                        </label>
+                                                        <select
+                                                            id="fromWarehouseID"
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            name="fromWarehouseID"
+                                                            onChange={(e) =>
+                                                                handleInputChange(e.target.name, e.target.value)
+                                                            }
+                                                        >
+                                                            <option selected="">Select Warehouse</option>
+                                                            {warehouses.map((element, index) => {
+                                                                return (
+                                                                    <option key={element._id} value={element._id}>
+                                                                        {element.name}
+                                                                    </option>
+                                                                );
+                                                            })}
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label
+                                                            htmlFor="toWarehouseID"
+                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                        >
+                                                            To Warehouse
+                                                        </label>
+                                                        <select
+                                                            id="toWarehouseID"
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            name="toWarehouseID"
+                                                            onChange={(e) =>
+                                                                handleInputChange(e.target.name, e.target.value)
+                                                            }
+                                                        >
+                                                            <option selected="">Select Warehouse</option>
+                                                            {warehouses?.length > 0 && warehouses.filter(w => w._id !== purchase.fromWarehouseID)?.map((element, index) => {
+                                                                return (
+                                                                    <option key={element._id} value={element._id}>
+                                                                        {element.name}
+                                                                    </option>
+                                                                );
+                                                            })}
+                                                        </select>
+                                                    </div>
+
+                                                    {/* <div>
                                                         <label
                                                             htmlFor="sendingLocation"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -197,8 +262,8 @@ export default function AddTransferStockDetails({
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="Enter Sending Location"
                                                         />
-                                                    </div>
-                                                    <div>
+                                                    </div> */}
+                                                    {/* <div>
                                                         <label
                                                             htmlFor="receivingLocation"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -216,7 +281,7 @@ export default function AddTransferStockDetails({
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="Enter Receiving Location"
                                                         />
-                                                    </div>
+                                                    </div> */}
                                                     <div>
                                                         <label
                                                             htmlFor="brandID"
@@ -228,6 +293,8 @@ export default function AddTransferStockDetails({
                                                             id="brandID"
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             name="brandID"
+                                                            value={purchase?.brandID || ''}
+                                                            disabled={true}
                                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                                                         >
                                                             <option selected="">Select Brand</option>
@@ -238,7 +305,7 @@ export default function AddTransferStockDetails({
                                                             ))}
                                                         </select>
                                                     </div>
-                                                    <div className="h-fit w-fit">
+                                                    <div className="h-fit w-full">
                                                         {/* <Datepicker
                               onChange={handleChange}
                               show={show}
@@ -262,12 +329,12 @@ export default function AddTransferStockDetails({
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center space-x-4">
+                                                {/* <div className="flex items-center space-x-4">
 
                                                     <Button className="pt-10" onClick={handleOpenBrand} variant="contained" color="secondary">
                                                         Add Brand
                                                     </Button>
-                                                </div>
+                                                </div> */}
                                             </form>
                                         </div>
                                     </div>
