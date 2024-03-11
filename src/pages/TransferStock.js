@@ -117,13 +117,7 @@ function TransferStockDetails() {
                                     Product Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Quantity Purchased
-                                </th>
-                                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Supplier Name
-                                </th>
-                                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Store Name
+                                    Quantity Transfer
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     Brand Name
@@ -157,31 +151,25 @@ function TransferStockDetails() {
                                 return (
                                     <tr key={element._id}>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element.ProductID?.name || ""}
+                                            {element.productID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            {element.QuantityPurchased}
+                                            {element.quantity}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element?.SupplierName || ""}
+                                            {element?.brandID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element?.StoreName || ""}
+                                            {element?.fromWarehouseID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element?.BrandID?.name || ""}
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element?.SendinLocation || ""}
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element?.ReceivingLocation || ""}
+                                            {element?.toWarehouseID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            {new Date(element.PurchaseDate).toLocaleDateString() ==
+                                            {new Date(element.transferDate).toLocaleDateString() ==
                                                 new Date().toLocaleDateString()
                                                 ? "Today"
-                                                : element.PurchaseDate}
+                                                : element.transferDate}
                                         </td>
                                         {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}

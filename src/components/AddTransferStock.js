@@ -43,6 +43,7 @@ export default function AddTransferStockDetails({
 
     // POST Data
     const addSale = () => {
+
         fetch("http://localhost:4000/api/transferstock/add", {
             method: "POST",
             headers: {
@@ -50,12 +51,18 @@ export default function AddTransferStockDetails({
             },
             body: JSON.stringify(purchase),
         })
-            .then(() => {
+            .then(async (res) => {
+                if (!res.ok) {
+                    const errorData = await res.json(); // Assuming the error response is in JSON format
+                    throw new Error(errorData.message || "Something went wrong on the server");
+                }
+
                 toastMessage("TransferStock ADDED", TOAST_TYPE.TYPE_SUCCESS)
                 handlePageUpdate();
                 addSaleModalSetting();
             })
-            .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+            .catch((err) => { toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR) });
+
     };
 
     const handleOpenBrand = () => {
