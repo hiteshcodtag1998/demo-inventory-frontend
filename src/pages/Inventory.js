@@ -19,13 +19,28 @@ function Inventory() {
   const [open, setOpen] = useState(false);
   const [dialogData, setDialogData] = useState();
   const [brands, setAllBrands] = useState([]);
+  const [selectWarehouse, setSelectWarehouse] = useState();
+  const [warehouses, setAllWarehouses] = useState([]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     fetchProductsData();
     fetchSalesData();
     fetchBrandData();
+    fetchWarehouseData();
   }, [updatePage]);
+
+  // Fetching Data of All Warehouse items
+  const fetchWarehouseData = () => {
+    fetch(`http://localhost:4000/api/warehouse/get`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllWarehouses(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
@@ -46,6 +61,24 @@ function Inventory() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setAllProducts(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
+
+  // Fetching Data of Search Products
+  const fetchProductByWarehouse = (searchItem) => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/select-by-warehouse?selectWarehouse=${searchItem}`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        data = data?.map(d => {
+          if (d?.productID) {
+            d = { ...d, name: d?.productID?.name, productCode: d?.productID?.productCode, description: d?.productID?.description }
+          }
+          return d;
+        })
         setAllProducts(data);
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
@@ -98,6 +131,12 @@ function Inventory() {
     fetchSearchData(e.target.value);
   };
 
+  // Handle Search Term
+  const handleWarehouse = (value) => {
+    setSelectWarehouse(value);
+    fetchProductByWarehouse(value)
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -117,6 +156,12 @@ function Inventory() {
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
+
+  const clearHandleFilter = () => {
+    setSearchTerm('');
+    setSelectWarehouse('');
+    fetchProductsData();
+  }
 
   return (
     <div className="col-span-12 lg:col-span-10  flex justify-center">
@@ -241,6 +286,35 @@ function Inventory() {
                   onChange={handleSearchTerm}
                 />
               </div>
+              <div>
+                <select
+                  id="fromWarehouseID"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  name="fromWarehouseID"
+                  value={selectWarehouse}
+
+                  onChange={(e) =>
+                    handleWarehouse(e.target.value)
+                  }
+                >
+                  <option value="">Select Warehouse</option>
+                  {warehouses.map((element, index) => {
+                    return (
+                      <option key={element._id} value={element._id}>
+                        {element.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="flex gap-4">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+                  onClick={clearHandleFilter}
+                >
+                  Clear filter
+                </button>
+              </div>
             </div>
             <div className="flex gap-4">
               <button
@@ -304,7 +378,7 @@ function Inventory() {
                       {element.productCode}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element?.BrandID?.name}
+                      {element?.productID?.BrandID?.name || element?.BrandID?.name}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.stock}
