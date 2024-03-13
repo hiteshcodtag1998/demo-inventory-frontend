@@ -11,28 +11,53 @@ export default function AddWriteOffDetails({
     products,
     handlePageUpdate,
     authContext,
-    brands
+    brands,
+    warehouses
 }) {
-    const [purchase, setPurchase] = useState({
+    const [purchase, setPurchase] = useState([{
         userID: authContext.user,
         productID: "",
         storeID: "",
         stockSold: "",
         saleDate: "",
         totalSaleAmount: "",
-    });
+        warehouseID: ""
+    }]);
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
     const [showBrandModal, setBrandModal] = useState(false);
 
     // Handling Input Change for input fields
-    const handleInputChange = (key, value) => {
-        setPurchase({ ...purchase, [key]: value });
+    const handleInputChange = (index, key, value) => {
+        const updatedSales = [...purchase];
+        if (key === 'productID') {
+            const brandInfo = products?.find(p => p._id === value)?.BrandID;
+            updatedSales[index] = { ...updatedSales[index], ['brandID']: brandInfo?._id };
+        }
+        updatedSales[index] = { ...updatedSales[index], [key]: value };
+        setPurchase(updatedSales);
     };
 
     // POST Data
     const addSale = () => {
-        console.log('purchase', purchase)
+        if (purchase?.length === 0) {
+            toastMessage("Please add sale", TOAST_TYPE.TYPE_ERROR)
+            return;
+        }
+
+        // Check if any product field is null or empty
+        const hasEmptyField = purchase.some(
+            (p) =>
+                !p?.productID ||
+                !p?.stockSold ||
+                !p?.saleDate
+        )
+
+        if (hasEmptyField) {
+            toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
+
         fetch("http://localhost:4000/api/writeoff/add", {
             method: "POST",
             headers: {
@@ -40,7 +65,12 @@ export default function AddWriteOffDetails({
             },
             body: JSON.stringify(purchase),
         })
-            .then(() => {
+            .then(async (res) => {
+                if (!res.ok) {
+                    const errorData = await res.json(); // Assuming the error response is in JSON format
+                    throw new Error(errorData.message || "Something went wrong on the server");
+                }
+
                 toastMessage("WriteOff ADDED", TOAST_TYPE.TYPE_SUCCESS)
                 handlePageUpdate();
                 addSaleModalSetting();
@@ -50,6 +80,22 @@ export default function AddWriteOffDetails({
 
     const handleOpenBrand = () => {
         setBrandModal(true)
+    };
+
+    const handleAddForm = () => {
+        setPurchase([...purchase, {
+            userID: authContext.user,
+            productID: "",
+            storeID: "",
+            stockSold: "",
+            saleDate: "",
+            totalSaleAmount: "",
+        }]);
+    };
+
+    const removeForm = (index) => {
+        console.log('index', index)
+        setPurchase(prevSale => prevSale.filter((_, i) => i !== index));
     };
 
     return (
@@ -91,6 +137,7 @@ export default function AddWriteOffDetails({
                                             <PlusIcon
                                                 className="h-6 w-6 text-blue-400"
                                                 aria-hidden="true"
+                                                onClick={handleAddForm}
                                             />
                                         </div>
                                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left ">
@@ -98,160 +145,213 @@ export default function AddWriteOffDetails({
                                                 as="h3"
                                                 className="text-lg  py-4 font-semibold leading-6 text-gray-900 "
                                             >
-                                                WriteOff Details
+                                                Add WriteOff
                                             </Dialog.Title>
-                                            <form action="#">
-                                                <div className="grid gap-4 mb-4 sm:grid-cols-2">
-                                                    <div>
-                                                        <label
-                                                            htmlFor="productID"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Product Name
-                                                        </label>
-                                                        <select
-                                                            id="productID"
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            name="productID"
-                                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                                        >
-                                                            <option selected="">Select Products</option>
-                                                            {products.map((element, index) => (
-                                                                <option key={element._id} value={element._id}>
-                                                                    {element.name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
+                                            {purchase.map((p, index) => (
+                                                <form action="#">
+                                                    <div className="flex justify-between items-center mt-5">
+                                                        <span>WriteOff: {index + 1}</span>
+                                                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                                            <button
+                                                                type="button"
+                                                                className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                                                onClick={() => removeForm(index)}
+                                                            >
+                                                                <svg
+                                                                    className="mr-1 -ml-1 w-5 h-5"
+                                                                    fill="currentColor"
+                                                                    viewBox="0 0 20 20"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                >
+                                                                    <path
+                                                                        fillRule="evenodd"
+                                                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                                        clipRule="evenodd"
+                                                                    ></path>
+                                                                </svg>
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid gap-4 mb-4 sm:grid-cols-2">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="productID"
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                            >
+                                                                Product Name
+                                                            </label>
+                                                            <select
+                                                                id="productID"
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                name="productID"
+                                                                onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
+                                                            >
+                                                                <option selected="">Select Products</option>
+                                                                {products.map((element, index) => (
+                                                                    <option key={element._id} value={element._id}>
+                                                                        {element.name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
 
-                                                    </div>
-                                                    <div>
-                                                        <label
-                                                            htmlFor="stockSold"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Stock Sold
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            name="stockSold"
-                                                            id="stockSold"
-                                                            value={purchase.stockSold}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="0 - 999"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label
-                                                            htmlFor="supplierName"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Supplier Name
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="supplierName"
-                                                            id="supplierName"
-                                                            value={purchase.supplierName}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Supplier Name"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label
-                                                            htmlFor="storeName"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Warehouse Name
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="storeName"
-                                                            id="storeName"
-                                                            value={purchase.storeName}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Warehouse Name"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label
-                                                            htmlFor="brandID"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Brand Name
-                                                        </label>
-                                                        <select
-                                                            id="brandID"
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            name="brandID"
-                                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                                        >
-                                                            <option selected="">Select Brand</option>
-                                                            {brands.map((element, index) => (
-                                                                <option key={element._id} value={element._id}>
-                                                                    {element.name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                    <div className="h-fit w-fit">
-                                                        {/* <Datepicker
+                                                        </div>
+                                                        <div>
+                                                            <label
+                                                                htmlFor="stockSold"
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                            >
+                                                                Stock Sold
+                                                            </label>
+                                                            <input
+                                                                type="number"
+                                                                name="stockSold"
+                                                                id="stockSold"
+                                                                value={purchase.stockSold}
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, e.target.name, e.target.value)
+                                                                }
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                placeholder="0 - 999"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label
+                                                                htmlFor="supplierName"
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                            >
+                                                                Supplier Name
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                name="supplierName"
+                                                                id="supplierName"
+                                                                value={purchase.supplierName}
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, e.target.name, e.target.value)
+                                                                }
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                placeholder="Enter Supplier Name"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label
+                                                                htmlFor="warehouseID"
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                            >
+                                                                Warehouse Name
+                                                            </label>
+                                                            <select
+                                                                id="warehouseID"
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                name="warehouseID"
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, e.target.name, e.target.value)
+                                                                }
+                                                            >
+                                                                <option selected="">Select Warehouse</option>
+                                                                {warehouses.map((element, index) => {
+                                                                    return (
+                                                                        <option key={element._id} value={element._id}>
+                                                                            {element.name}
+                                                                        </option>
+                                                                    );
+                                                                })}
+                                                            </select>
+                                                        </div>
+                                                        {/* <div>
+                                                            <label
+                                                                htmlFor="storeName"
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                            >
+                                                                Warehouse Name
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                name="storeName"
+                                                                id="storeName"
+                                                                value={purchase.storeName}
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, e.target.name, e.target.value)
+                                                                }
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                placeholder="Enter Warehouse Name"
+                                                            />
+                                                        </div> */}
+                                                        <div>
+                                                            <label
+                                                                htmlFor="brandID"
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                            >
+                                                                Brand Name
+                                                            </label>
+                                                            <select
+                                                                id="brandID"
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                name="brandID"
+                                                                disabled={true}
+                                                                value={purchase[index]?.brandID || ''}
+                                                                onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
+                                                            >
+                                                                <option selected="">Select Brand</option>
+                                                                {brands.map((element, index) => (
+                                                                    <option key={element._id} value={element._id}>
+                                                                        {element.name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        <div className="h-fit w-fit">
+                                                            {/* <Datepicker
                               onChange={handleChange}
                               show={show}
                               setShow={handleClose}
                             /> */}
+                                                            <label
+                                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                                htmlFor="salesDate"
+                                                            >
+                                                                WriteOff Date
+                                                            </label>
+                                                            <input
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                type="date"
+                                                                id="saleDate"
+                                                                name="saleDate"
+                                                                value={purchase.saleDate}
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, e.target.name, e.target.value)
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div>
                                                         <label
+                                                            htmlFor="reason"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                            htmlFor="salesDate"
                                                         >
-                                                            WriteOff Date
+                                                            Reason
                                                         </label>
                                                         <input
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            type="date"
-                                                            id="saleDate"
-                                                            name="saleDate"
-                                                            value={purchase.saleDate}
+                                                            type="text"
+                                                            name="reason"
+                                                            id="reason"
+                                                            value={purchase.reason}
                                                             onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
+                                                                handleInputChange(index, e.target.name, e.target.value)
                                                             }
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            placeholder="Enter Reason Name"
                                                         />
                                                     </div>
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        htmlFor="reason"
-                                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                    >
-                                                        Reason
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="reason"
-                                                        id="reason"
-                                                        value={purchase.reason}
-                                                        onChange={(e) =>
-                                                            handleInputChange(e.target.name, e.target.value)
-                                                        }
-                                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                        placeholder="Enter Reason Name"
-                                                    />
-                                                </div>
-                                                {/* <div className="flex items-center space-x-4">
+                                                    {/* <div className="flex items-center space-x-4">
 
                                                     <Button className="pt-10" onClick={handleOpenBrand} variant="contained" color="secondary">
                                                         Add Brand
                                                     </Button>
                                                 </div> */}
-                                            </form>
+                                                </form>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>

@@ -13,6 +13,7 @@ function WriteOffDetails() {
     const [brands, setAllBrands] = useState([]);
     const [products, setAllProducts] = useState([]);
     const [updatePage, setUpdatePage] = useState(true);
+    const [warehouses, setAllWarehouses] = useState([]);
     const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
     const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
@@ -22,6 +23,7 @@ function WriteOffDetails() {
         fetchPurchaseData();
         fetchProductsData();
         fetchBrandData();
+        fetchWarehouseData();
     }, [updatePage]);
 
     // Fetching Data of All Purchase items
@@ -56,6 +58,18 @@ function WriteOffDetails() {
             .then((response) => response.json())
             .then((data) => {
                 setAllProducts(data);
+            })
+            .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+    };
+
+    // Fetching Data of All Warehouse items
+    const fetchWarehouseData = () => {
+        fetch(`http://localhost:4000/api/warehouse/get`, {
+            headers: { role: myLoginUser?.roleID?.name }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setAllWarehouses(data);
             })
             .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
     };
@@ -121,6 +135,7 @@ function WriteOffDetails() {
                         brands={brands}
                         handlePageUpdate={handlePageUpdate}
                         authContext={authContext}
+                        warehouses={warehouses}
                     />
                 )}
                 {/* Table  */}
@@ -152,7 +167,7 @@ function WriteOffDetails() {
                                     Supplier Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Store Name
+                                    Warehouse Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     Brand Name
@@ -192,7 +207,7 @@ function WriteOffDetails() {
                                             {element?.SupplierName || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                                            {element?.StoreName || ""}
+                                            {element?.warehouseID?.name || ""}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                                             {element?.BrandID?.name || ""}

@@ -216,7 +216,7 @@ function Dashboard() {
           </div>
         </article> */}
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -232,8 +232,8 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium"> 1% </span>
-          </div>
+            {/* <span className="text-xs font-medium"> 1% </span>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
@@ -251,7 +251,7 @@ function Dashboard() {
           </div>
         </article>
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -268,7 +268,7 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 5% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
