@@ -6,15 +6,15 @@ import AuthContext from "../AuthContext";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 
-export default function AddWarehouse({ setAdded, updateWarehouseModalSetting }) {
-    const authContext = useContext(AuthContext);
+export default function UpdateWarehouse({ updateWarehouseData, updateModalSetting, fetchWarehouseData }) {
+    const { _id, name, address, city, category } = updateWarehouseData;
+
     const [form, setForm] = useState({
-        userId: authContext.user,
-        name: "",
-        category: "Electronics",
-        address: "",
-        city: "",
-        image: "",
+        warehouseID: _id,
+        name,
+        category,
+        address,
+        city,
     });
 
     const handleInputChange = (e) => {
@@ -24,8 +24,8 @@ export default function AddWarehouse({ setAdded, updateWarehouseModalSetting }) 
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
 
-    const addWarehouse = () => {
-        fetch("http://localhost:4000/api/warehouse/add", {
+    const updateWarehouse = () => {
+        fetch("http://localhost:4000/api/warehouse/update", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
@@ -33,10 +33,10 @@ export default function AddWarehouse({ setAdded, updateWarehouseModalSetting }) 
             body: JSON.stringify(form),
         })
             .then(() => {
-                toastMessage("WAREHOUSE ADDED", TOAST_TYPE.TYPE_SUCCESS)
+                toastMessage("WAREHOUSE UPDATED", TOAST_TYPE.TYPE_SUCCESS)
                 setOpen(false);
-                setAdded(true);
-                updateWarehouseModalSetting();
+                fetchWarehouseData();
+                updateModalSetting();
             })
             .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
     };
@@ -237,14 +237,14 @@ export default function AddWarehouse({ setAdded, updateWarehouseModalSetting }) 
                                     <button
                                         type="button"
                                         className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                        onClick={addWarehouse}
+                                        onClick={updateWarehouse}
                                     >
-                                        Add Warehouse
+                                        Update Warehouse
                                     </button>
                                     <button
                                         type="button"
                                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                        onClick={() => updateWarehouseModalSetting()}
+                                        onClick={() => updateModalSetting()}
                                         ref={cancelButtonRef}
                                     >
                                         Cancel
