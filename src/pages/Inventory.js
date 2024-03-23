@@ -333,10 +333,10 @@ function Inventory() {
                   Product
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Code
+                  Brand Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Brand Name
+                  Code
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Stock
@@ -374,11 +374,11 @@ function Inventory() {
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element.name}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.productCode}
-                    </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element?.productID?.BrandID?.name || element?.BrandID?.name}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element.productCode}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.stock}

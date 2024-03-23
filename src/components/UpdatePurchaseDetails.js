@@ -3,26 +3,29 @@ import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
-import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
 
-export default function AddTransferStockDetails({
-    addSaleModalSetting,
-    products,
-    handlePageUpdate,
-    authContext,
+export default function UpdatePurchaseDetails({
     brands,
+    products,
+    authContext,
+    updatePurchaseData,
+    updateModalSetting,
+    fetchPurchaseData,
     warehouses
 }) {
+    console.log('updatePurchaseData', updatePurchaseData)
+    const { _id, PurchaseDate, ProductID, BrandID, totalPurchaseAmount, SupplierName, QuantityPurchased, warehouseID } = updatePurchaseData;
     const [purchase, setPurchase] = useState({
+        purchaseID: _id,
         userID: authContext.user,
-        productID: "",
-        quantityPurchased: "",
-        purchaseDate: "",
-        totalPurchaseAmount: "",
-        fromWarehouseID: "",
-        toWarehouseID: "",
-        brandID: ""
+        productID: ProductID?._id,
+        quantityPurchased: QuantityPurchased,
+        purchaseDate: PurchaseDate,
+        brandID: BrandID?._id,
+        totalPurchaseAmount,
+        supplierName: SupplierName,
+        warehouseID: warehouseID?._id,
     });
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
@@ -30,39 +33,29 @@ export default function AddTransferStockDetails({
 
     // Handling Input Change for input fields
     const handleInputChange = (key, value) => {
-        let updatedTransferData = { ...purchase };
-        if (key === 'productID') {
-            const brandInfo = products?.find(p => p._id === value)?.BrandID;
-            updatedTransferData = { ...updatedTransferData, brandID: brandInfo?._id };
-        }
-
-        updatedTransferData = { ...updatedTransferData, [key]: value }
-
-        setPurchase(updatedTransferData);
+        setPurchase({ ...purchase, [key]: value });
     };
 
     // POST Data
-    const addSale = () => {
+    const updatePurchase = () => {
+        if (!purchase.productID || !purchase.quantityPurchased || !purchase.purchaseDate) {
+            toastMessage("Please fill in all fields for each purchase", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
 
-        fetch("http://localhost:4000/api/transferstock/add", {
+        fetch("http://localhost:4000/api/purchase/update", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
             },
             body: JSON.stringify(purchase),
         })
-            .then(async (res) => {
-                if (!res.ok) {
-                    const errorData = await res.json(); // Assuming the error response is in JSON format
-                    throw new Error(errorData.message || "Something went wrong on the server");
-                }
-
-                toastMessage("TransferStock ADDED", TOAST_TYPE.TYPE_SUCCESS)
-                handlePageUpdate();
-                addSaleModalSetting();
+            .then(() => {
+                toastMessage("Purchase ADDED", TOAST_TYPE.TYPE_SUCCESS)
+                fetchPurchaseData();
+                updateModalSetting();
             })
-            .catch((err) => { toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR) });
-
+            .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
     };
 
     const handleOpenBrand = () => {
@@ -104,20 +97,16 @@ export default function AddTransferStockDetails({
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg overflow-y-scroll">
                                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                                     <div className="sm:flex sm:items-start">
-                                        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                                            <PlusIcon
-                                                className="h-6 w-6 text-blue-400"
-                                                aria-hidden="true"
-                                            />
-                                        </div>
+
                                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left ">
                                             <Dialog.Title
                                                 as="h3"
                                                 className="text-lg  py-4 font-semibold leading-6 text-gray-900 "
                                             >
-                                                TransferStock Details
+                                                Purchase Details
                                             </Dialog.Title>
                                             <form action="#">
+
                                                 <div className="grid gap-4 mb-4 sm:grid-cols-2">
                                                     <div>
                                                         <label
@@ -130,6 +119,8 @@ export default function AddTransferStockDetails({
                                                             id="productID"
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             name="productID"
+                                                            value={purchase.productID}
+                                                            disabled={true}
                                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                                                         >
                                                             <option selected="">Select Products</option>
@@ -183,7 +174,7 @@ export default function AddTransferStockDetails({
                                                             placeholder="0 - 999"
                                                         />
                                                     </div>
-                                                    {/* <div>
+                                                    <div>
                                                         <label
                                                             htmlFor="supplierName"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -201,41 +192,24 @@ export default function AddTransferStockDetails({
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="Enter Supplier Name"
                                                         />
-                                                    </div> */}
-                                                    {/* <div>
-                                                        <label
-                                                            htmlFor="storeName"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Store Name
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="storeName"
-                                                            id="storeName"
-                                                            value={purchase.storeName}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Store Name"
-                                                        />
-                                                    </div> */}
+                                                    </div>
 
                                                     <div>
                                                         <label
-                                                            htmlFor="fromWarehouseID"
+                                                            htmlFor="warehouseID"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            From Warehouse
+                                                            Warehouse Name
                                                         </label>
                                                         <select
-                                                            id="fromWarehouseID"
+                                                            id="warehouseID"
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            name="fromWarehouseID"
+                                                            name="warehouseID"
+                                                            disabled={true}
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
+                                                            value={purchase.warehouseID}
                                                         >
                                                             <option selected="">Select Warehouse</option>
                                                             {warehouses.map((element, index) => {
@@ -248,82 +222,13 @@ export default function AddTransferStockDetails({
                                                         </select>
                                                     </div>
 
-                                                    <div>
-                                                        <label
-                                                            htmlFor="toWarehouseID"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            To Warehouse
-                                                        </label>
-                                                        <select
-                                                            id="toWarehouseID"
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            name="toWarehouseID"
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                        >
-                                                            <option selected="">Select Warehouse</option>
-                                                            {warehouses?.length > 0 && warehouses.filter(w => w._id !== purchase.fromWarehouseID)?.map((element, index) => {
-                                                                return (
-                                                                    <option key={element._id} value={element._id}>
-                                                                        {element.name}
-                                                                    </option>
-                                                                );
-                                                            })}
-                                                        </select>
-                                                    </div>
-
-                                                    {/* <div>
-                                                        <label
-                                                            htmlFor="sendingLocation"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Sending Location
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="sendingLocation"
-                                                            id="sendingLocation"
-                                                            value={purchase.sendingLocation}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Sending Location"
-                                                        />
-                                                    </div> */}
-                                                    {/* <div>
-                                                        <label
-                                                            htmlFor="receivingLocation"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Receiving Location
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="receivingLocation"
-                                                            id="receivingLocation"
-                                                            value={purchase.receivingLocation}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Receiving Location"
-                                                        />
-                                                    </div> */}
-
                                                     <div className="h-fit w-full">
-                                                        {/* <Datepicker
-                              onChange={handleChange}
-                              show={show}
-                              setShow={handleClose}
-                            /> */}
+
                                                         <label
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                             htmlFor="purchaseDate"
                                                         >
-                                                            Transfer Date
+                                                            Purchase Date
                                                         </label>
                                                         <input
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -336,13 +241,30 @@ export default function AddTransferStockDetails({
                                                             }
                                                         />
                                                     </div>
+                                                    <div>
+                                                        <label
+                                                            htmlFor="referenceNo"
+                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                        >
+                                                            Reference Number
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="referenceNo"
+                                                            id="referenceNo"
+                                                            value={purchase.referenceNo}
+                                                            onChange={(e) =>
+                                                                handleInputChange(e.target.name, e.target.value)
+                                                            }
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            placeholder="Enter Reference Number"
+                                                        />
+                                                    </div>
                                                 </div>
-                                                {/* <div className="flex items-center space-x-4">
+                                                <div className="flex items-center space-x-4">
 
-                                                    <Button className="pt-10" onClick={handleOpenBrand} variant="contained" color="secondary">
-                                                        Add Brand
-                                                    </Button>
-                                                </div> */}
+
+                                                </div>
                                             </form>
                                         </div>
                                     </div>
@@ -351,25 +273,25 @@ export default function AddTransferStockDetails({
                                     <button
                                         type="button"
                                         className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                        onClick={addSale}
+                                        onClick={updatePurchase}
                                     >
-                                        Add
+                                        Update
                                     </button>
                                     <button
                                         type="button"
                                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                        onClick={() => addSaleModalSetting()}
+                                        onClick={() => updateModalSetting()}
                                         ref={cancelButtonRef}
                                     >
                                         Cancel
                                     </button>
                                 </div>
-                                {showBrandModal && (
+                                {/* {showBrandModal && (
                                     <AddBrand
                                         addBrandModalSetting={() => { setBrandModal(false) }}
                                         handlePageUpdate={handlePageUpdate}
                                     />
-                                )}
+                                )} */}
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>

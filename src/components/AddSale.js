@@ -204,6 +204,29 @@ export default function AddSale({
                             </div>
                             <div>
                               <label
+                                htmlFor="brandID"
+                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              >
+                                Brand Name
+                              </label>
+                              <select
+                                id="brandID"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                name="brandID"
+                                value={sale[index]?.brandID || ''}
+                                disabled={true}
+                                onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
+                              >
+                                <option selected="">Select Brand</option>
+                                {brands.map((element, index) => (
+                                  <option key={element._id} value={element._id}>
+                                    {element.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label
                                 htmlFor="stockSold"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                               >
@@ -311,29 +334,7 @@ export default function AddSale({
                               placeholder="$299"
                             />
                           </div> */}
-                            <div>
-                              <label
-                                htmlFor="brandID"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              >
-                                Brand Name
-                              </label>
-                              <select
-                                id="brandID"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                name="brandID"
-                                value={sale[index]?.brandID || ''}
-                                disabled={true}
-                                onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
-                              >
-                                <option selected="">Select Brand</option>
-                                {brands.map((element, index) => (
-                                  <option key={element._id} value={element._id}>
-                                    {element.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
+
                             {/* <div className="mt-7">
                               <Button className="pt-10" onClick={handleOpenBrand} variant="contained" color="secondary">
                                 Add Brand

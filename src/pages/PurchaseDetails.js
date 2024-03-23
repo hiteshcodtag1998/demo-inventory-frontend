@@ -6,9 +6,13 @@ import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
+import UpdatePurchaseDetails from "../components/UpdatePurchaseDetails";
+import { MdEdit } from "react-icons/md";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
+  const [showUpdatePurchaseModal, setUpdatePurchaseModal] = useState(false);
+  const [updatePurchase, setUpdatePurchase] = useState([]);
   const [purchase, setAllPurchaseData] = useState([]);
   const [brands, setAllBrands] = useState([]);
   const [warehouses, setAllWarehouses] = useState([]);
@@ -74,9 +78,15 @@ function PurchaseDetails() {
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
 
-  // Modal for Sale Add
+  // Modal for Purchase Add
   const addSaleModalSetting = () => {
     setPurchaseModal(!showPurchaseModal);
+  };
+
+  // Modal for Sale Add
+  const updatePurchaseModalSetting = (selectedPurchaseData) => {
+    setUpdatePurchase(selectedPurchaseData);
+    setUpdatePurchaseModal(!showUpdatePurchaseModal);
   };
 
 
@@ -139,6 +149,17 @@ function PurchaseDetails() {
             warehouses={warehouses}
           />
         )}
+        {showUpdatePurchaseModal && (
+          <UpdatePurchaseDetails
+            brands={brands}
+            products={products}
+            authContext={authContext}
+            updatePurchaseData={updatePurchase}
+            updateModalSetting={updatePurchaseModalSetting}
+            fetchPurchaseData={fetchPurchaseData}
+            warehouses={warehouses}
+          />
+        )}
         {/* Table  */}
         <div className="overflow-x-auto rounded-lg border bg-white border-gray-200 ">
           <div className="flex justify-between pt-5 pb-3 px-3">
@@ -162,6 +183,9 @@ function PurchaseDetails() {
                   Product Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Brand Name
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Quantity Purchased
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
@@ -169,9 +193,6 @@ function PurchaseDetails() {
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Warehouse Name
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Brand Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Purchase Date
@@ -201,6 +222,9 @@ function PurchaseDetails() {
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element.ProductID?.name || ""}
                     </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.BrandID?.name || ""}
+                    </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.QuantityPurchased}
                     </td>
@@ -210,9 +234,6 @@ function PurchaseDetails() {
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element?.warehouseID?.name || ""}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element?.BrandID?.name || ""}
-                    </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {new Date(element.PurchaseDate).toLocaleDateString() ==
                         new Date().toLocaleDateString()
@@ -220,15 +241,25 @@ function PurchaseDetails() {
                         : element.PurchaseDate}
                     </td>
                     <td>
-                      <Tooltip title="Download Purchase Note" arrow>
-                        <span
-                          className="text-green-700 px-2 flex"
-                        >
-                          {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
-                            <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
-                          }
-                        </span>
-                      </Tooltip>
+                      <div className="flex">
+                        <Tooltip title="Edit" arrow>
+                          <span
+                            className="text-green-700 cursor-pointer"
+                            onClick={() => updatePurchaseModalSetting(element)}
+                          >
+                            <MdEdit />
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Download Purchase Note" arrow>
+                          <span
+                            className="text-green-700 px-2 flex"
+                          >
+                            {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                              <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                            }
+                          </span>
+                        </Tooltip>
+                      </div>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}

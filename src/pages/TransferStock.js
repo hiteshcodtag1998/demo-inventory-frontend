@@ -117,10 +117,10 @@ function TransferStockDetails() {
                                     Product Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Quantity Transfer
+                                    Brand Name
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Brand Name
+                                    Quantity Transfer
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     Sending Location
@@ -153,11 +153,11 @@ function TransferStockDetails() {
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                                             {element.productID?.name || ""}
                                         </td>
-                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            {element.quantity}
-                                        </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                                             {element?.brandID?.name || ""}
+                                        </td>
+                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            {element.quantity}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                                             {element?.fromWarehouseID?.name || ""}

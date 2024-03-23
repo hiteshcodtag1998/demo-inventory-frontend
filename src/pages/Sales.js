@@ -177,6 +177,9 @@ function Sales() {
                   Store Name
                 </th> */}
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Brand Name
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Stock Sold
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
@@ -184,9 +187,6 @@ function Sales() {
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Warehouse Name
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Brand Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Sales Date
@@ -219,6 +219,9 @@ function Sales() {
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.StoreID?.name}
                     </td> */}
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element?.BrandID?.name || ""}
+                    </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.StockSold}
                     </td>
@@ -227,9 +230,6 @@ function Sales() {
                     </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element?.warehouseID?.name || ""}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element?.BrandID?.name || ""}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {new Date(element.SaleDate).toLocaleDateString() ==
