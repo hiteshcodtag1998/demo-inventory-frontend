@@ -3,49 +3,49 @@ import { Dialog, Transition } from "@headlessui/react";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 
-export default function UpdatePurchaseDetails({
+export default function UpdateWriteOff({
     brands,
     products,
     authContext,
-    updatePurchaseData,
+    updateWriteOffData,
     updateModalSetting,
-    fetchPurchaseData,
+    fetchWriteOffData,
     warehouses
 }) {
-    const { _id, PurchaseDate, ProductID, BrandID, totalPurchaseAmount, SupplierName, referenceNo, QuantityPurchased, warehouseID } = updatePurchaseData;
-    const [purchase, setPurchase] = useState({
-        purchaseID: _id,
+    const { _id, SaleDate, ProductID, BrandID, totalPurchaseAmount, SupplierName, reason, StockSold, warehouseID } = updateWriteOffData;
+    const [writeOff, setWriteOff] = useState({
+        writeOffID: _id,
         userID: authContext.user,
         productID: ProductID?._id,
-        quantityPurchased: QuantityPurchased,
-        purchaseDate: PurchaseDate,
+        stockSold: StockSold,
+        saleDate: SaleDate,
         brandID: BrandID?._id,
         totalPurchaseAmount,
         supplierName: SupplierName,
         warehouseID: warehouseID?._id,
-        referenceNo
+        reason
     });
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
 
     // Handling Input Change for input fields
     const handleInputChange = (key, value) => {
-        setPurchase({ ...purchase, [key]: value });
+        setWriteOff({ ...writeOff, [key]: value });
     };
 
     // POST Data
-    const updatePurchase = () => {
-        if (!purchase.productID || !purchase.quantityPurchased || !purchase.purchaseDate) {
-            toastMessage("Please fill in all fields for each purchase", TOAST_TYPE.TYPE_ERROR);
+    const updateSale = () => {
+        if (!writeOff.productID || !writeOff.stockSold || !writeOff.saleDate) {
+            toastMessage("Please fill in all fields for each writeOff", TOAST_TYPE.TYPE_ERROR);
             return;
         }
 
-        fetch("http://localhost:4000/api/purchase/update", {
+        fetch("http://localhost:4000/api/writeoff/update", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(purchase),
+            body: JSON.stringify(writeOff),
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -53,8 +53,8 @@ export default function UpdatePurchaseDetails({
                     throw new Error(errorData.message || "Something went wrong on the server");
                 }
 
-                toastMessage("Purchase ADDED", TOAST_TYPE.TYPE_SUCCESS)
-                fetchPurchaseData();
+                toastMessage("WriteOff UPDATED", TOAST_TYPE.TYPE_SUCCESS)
+                fetchWriteOffData();
                 updateModalSetting();
             })
             .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
@@ -101,7 +101,7 @@ export default function UpdatePurchaseDetails({
                                                 as="h3"
                                                 className="text-lg  py-4 font-semibold leading-6 text-gray-900 "
                                             >
-                                                Purchase Details
+                                                Update WriteOff Details
                                             </Dialog.Title>
                                             <form action="#">
 
@@ -117,7 +117,7 @@ export default function UpdatePurchaseDetails({
                                                             id="productID"
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             name="productID"
-                                                            value={purchase.productID}
+                                                            value={writeOff.productID}
                                                             disabled={true}
                                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                                                         >
@@ -141,7 +141,7 @@ export default function UpdatePurchaseDetails({
                                                             id="brandID"
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             name="brandID"
-                                                            value={purchase?.brandID || ''}
+                                                            value={writeOff?.brandID || ''}
                                                             disabled={true}
                                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                                                         >
@@ -155,16 +155,16 @@ export default function UpdatePurchaseDetails({
                                                     </div>
                                                     <div>
                                                         <label
-                                                            htmlFor="quantityPurchased"
+                                                            htmlFor="stockSold"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            Quantity Purchased
+                                                            Stock WriteOff
                                                         </label>
                                                         <input
                                                             type="number"
-                                                            name="quantityPurchased"
-                                                            id="quantityPurchased"
-                                                            value={purchase.quantityPurchased}
+                                                            name="stockSold"
+                                                            id="stockSold"
+                                                            value={writeOff.stockSold}
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
@@ -172,25 +172,7 @@ export default function UpdatePurchaseDetails({
                                                             placeholder="0 - 999"
                                                         />
                                                     </div>
-                                                    <div>
-                                                        <label
-                                                            htmlFor="supplierName"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            Supplier Name
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="supplierName"
-                                                            id="supplierName"
-                                                            value={purchase.supplierName}
-                                                            onChange={(e) =>
-                                                                handleInputChange(e.target.name, e.target.value)
-                                                            }
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Supplier Name"
-                                                        />
-                                                    </div>
+
 
                                                     <div>
                                                         <label
@@ -207,7 +189,7 @@ export default function UpdatePurchaseDetails({
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
-                                                            value={purchase.warehouseID}
+                                                            value={writeOff.warehouseID}
                                                         >
                                                             <option selected="">Select Warehouse</option>
                                                             {warehouses.map((element, index) => {
@@ -224,16 +206,16 @@ export default function UpdatePurchaseDetails({
 
                                                         <label
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                            htmlFor="purchaseDate"
+                                                            htmlFor="saleDate"
                                                         >
-                                                            Purchase Date
+                                                            Sales Date
                                                         </label>
                                                         <input
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             type="date"
-                                                            id="purchaseDate"
-                                                            name="purchaseDate"
-                                                            value={purchase.purchaseDate}
+                                                            id="saleDate"
+                                                            name="saleDate"
+                                                            value={writeOff.saleDate}
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
@@ -241,27 +223,23 @@ export default function UpdatePurchaseDetails({
                                                     </div>
                                                     <div>
                                                         <label
-                                                            htmlFor="referenceNo"
+                                                            htmlFor="reason"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            Reference Number
+                                                            Reason
                                                         </label>
                                                         <input
                                                             type="text"
-                                                            name="referenceNo"
-                                                            id="referenceNo"
-                                                            value={purchase.referenceNo}
+                                                            name="reason"
+                                                            id="reason"
+                                                            value={writeOff.reason}
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="Enter Reference Number"
+                                                            placeholder="Enter Reason Name"
                                                         />
                                                     </div>
-                                                </div>
-                                                <div className="flex items-center space-x-4">
-
-
                                                 </div>
                                             </form>
                                         </div>
@@ -271,7 +249,7 @@ export default function UpdatePurchaseDetails({
                                     <button
                                         type="button"
                                         className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                        onClick={updatePurchase}
+                                        onClick={updateSale}
                                     >
                                         Update
                                     </button>

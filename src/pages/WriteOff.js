@@ -6,6 +6,8 @@ import AddWriteOffDetails from "../components/AddWriteOff";
 import { FaDownload } from "react-icons/fa6";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
+import UpdateWriteOff from "../components/UpdateWriteOff";
+import { MdEdit } from "react-icons/md";
 
 function WriteOffDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -15,19 +17,21 @@ function WriteOffDetails() {
     const [updatePage, setUpdatePage] = useState(true);
     const [warehouses, setAllWarehouses] = useState([]);
     const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
+    const [showUpdateWriteOffModal, setUpdateWriteOffModal] = useState(false);
+    const [updateWriteOff, setUpdateWriteOff] = useState([]);
     const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
     const authContext = useContext(AuthContext);
 
     useEffect(() => {
-        fetchPurchaseData();
+        fetchWriteOffData();
         fetchProductsData();
         fetchBrandData();
         fetchWarehouseData();
     }, [updatePage]);
 
-    // Fetching Data of All Purchase items
-    const fetchPurchaseData = () => {
+    // Fetching Data of All WriteOff items
+    const fetchWriteOffData = () => {
         fetch(`http://localhost:4000/api/writeoff/get`, {
             headers: { role: myLoginUser?.roleID?.name }
         })
@@ -125,6 +129,12 @@ function WriteOffDetails() {
         }
     }
 
+    // Modal for WriteOff Update
+    const updateWriteOffModalSetting = (selectedSaleData) => {
+        setUpdateWriteOff(selectedSaleData);
+        setUpdateWriteOffModal(!showUpdateWriteOffModal);
+    };
+
     return (
         <div className="col-span-12 lg:col-span-10  flex justify-center">
             <div className=" flex flex-col gap-5 w-11/12">
@@ -135,6 +145,17 @@ function WriteOffDetails() {
                         brands={brands}
                         handlePageUpdate={handlePageUpdate}
                         authContext={authContext}
+                        warehouses={warehouses}
+                    />
+                )}
+                {showUpdateWriteOffModal && (
+                    <UpdateWriteOff
+                        brands={brands}
+                        products={products}
+                        authContext={authContext}
+                        updateWriteOffData={updateWriteOff}
+                        updateModalSetting={updateWriteOffModalSetting}
+                        fetchWriteOffData={fetchWriteOffData}
                         warehouses={warehouses}
                     />
                 )}
@@ -219,15 +240,25 @@ function WriteOffDetails() {
                                                 : element.SaleDate}
                                         </td>
                                         <td>
-                                            <Tooltip title="Download WriteOff Note" arrow>
-                                                <span
-                                                    className="text-green-700 px-2 flex"
-                                                >
-                                                    {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
-                                                        <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
-                                                    }
-                                                </span>
-                                            </Tooltip>
+                                            <div className="flex">
+                                                <Tooltip title="Edit" arrow>
+                                                    <span
+                                                        className="text-green-700 cursor-pointer"
+                                                        onClick={() => updateWriteOffModalSetting(element)}
+                                                    >
+                                                        <MdEdit />
+                                                    </span>
+                                                </Tooltip>
+                                                <Tooltip title="Download WriteOff Note" arrow>
+                                                    <span
+                                                        className="text-green-700 px-2 flex"
+                                                    >
+                                                        {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                                                            <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                                                        }
+                                                    </span>
+                                                </Tooltip>
+                                            </div>
                                         </td>
                                         {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}

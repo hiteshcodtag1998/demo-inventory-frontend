@@ -6,6 +6,8 @@ import { toastMessage } from "../utils/handler";
 import { TOAST_TYPE } from "../utils/constant";
 import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
+import UpdateSale from "../components/UpdateSale";
+import { MdEdit } from "react-icons/md";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
@@ -16,6 +18,8 @@ function Sales() {
   const [warehouses, setAllWarehouses] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
   const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
+  const [showUpdateSaleModal, setUpdateSaleModal] = useState(false);
+  const [updateSale, setUpdateSale] = useState([]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   const authContext = useContext(AuthContext);
@@ -137,6 +141,12 @@ function Sales() {
     setUpdatePage(!updatePage);
   };
 
+  // Modal for Sale Update
+  const updateSaleModalSetting = (selectedSaleData) => {
+    setUpdateSale(selectedSaleData);
+    setUpdateSaleModal(!showUpdateSaleModal);
+  };
+
   return (
     <div className="col-span-12 lg:col-span-10  flex justify-center">
       <div className=" flex flex-col gap-5 w-11/12">
@@ -148,6 +158,17 @@ function Sales() {
             brands={brands}
             handlePageUpdate={handlePageUpdate}
             authContext={authContext}
+            warehouses={warehouses}
+          />
+        )}
+        {showUpdateSaleModal && (
+          <UpdateSale
+            brands={brands}
+            products={products}
+            authContext={authContext}
+            updateSaleData={updateSale}
+            updateModalSetting={updateSaleModalSetting}
+            fetchSalesData={fetchSalesData}
             warehouses={warehouses}
           />
         )}
@@ -238,15 +259,25 @@ function Sales() {
                         : element.SaleDate}
                     </td>
                     <td>
-                      <Tooltip title="Download Sale Note" arrow>
-                        <span
-                          className="text-green-700 px-2 flex"
-                        >
-                          {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
-                            <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
-                          }
-                        </span>
-                      </Tooltip>
+                      <div className="flex">
+                        <Tooltip title="Edit" arrow>
+                          <span
+                            className="text-green-700 cursor-pointer"
+                            onClick={() => updateSaleModalSetting(element)}
+                          >
+                            <MdEdit />
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Download Sale Note" arrow>
+                          <span
+                            className="text-green-700 px-2 flex"
+                          >
+                            {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                              <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                            }
+                          </span>
+                        </Tooltip>
+                      </div>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalSaleAmount}

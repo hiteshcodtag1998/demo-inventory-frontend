@@ -224,7 +224,7 @@ export default function AddWriteOffDetails({
                                                                 htmlFor="stockSold"
                                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                             >
-                                                                Stock Sold
+                                                                Stock WriteOff
                                                             </label>
                                                             <input
                                                                 type="number"
