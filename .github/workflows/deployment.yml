@@ -34,6 +34,9 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+    - name: Create Build Directory
+      run: mkdir -p /home/ubuntu/inventory-demo/demo-inventory-frontend/build
+
     - name: Deploy to Lightsail
       run: |
         scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@65.1.9.112:/home/ubuntu/inventory-demo/demo-inventory-frontend/build
