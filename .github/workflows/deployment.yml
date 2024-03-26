@@ -36,4 +36,4 @@ jobs:
 
     - name: Deploy to Lightsail
       run: |
-        scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@65.1.9.112:/home/ubuntu/inventory-demo/demo-inventory-frontend/ && ssh ubuntu@65.1.9.112 'mkdir -p /home/ubuntu/inventory-demo/demo-inventory-frontend/build'
+        scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@65.1.9.112:/home/ubuntu/inventory-demo/demo-inventory-frontend/ && ssh ubuntu@65.1.9.112 'sudo mkdir -p /home/ubuntu/inventory-demo/demo-inventory-frontend/build'
