@@ -29,11 +29,6 @@ jobs:
       env:
         CI: false # Disable treating warnings as errors
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: ${{ success() && needs.build.result == 'success' }}
-    steps:
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.5.3
       with:
