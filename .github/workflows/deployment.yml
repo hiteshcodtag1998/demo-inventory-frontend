@@ -19,9 +19,12 @@ jobs:
       run: npm install
 
     - name: Build React App
-      run: npm run build
+      run: sudo npm run build
       id: build
       continue-on-error: true
+
+    - name: List Build Folder Contents
+      run: ls -la ./build
 
       env:
         CI: false # Disable treating warnings as errors
