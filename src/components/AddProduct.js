@@ -53,7 +53,7 @@ export default function AddProduct({
     }
 
     // Assuming you want to add only the first product for simplicity
-    fetch("http://localhost:4000/api/product/add", {
+    fetch("http://65.1.9.112/api/product/add", {
       method: "POST",
       headers: {
         role: myLoginUser?.roleID?.name,

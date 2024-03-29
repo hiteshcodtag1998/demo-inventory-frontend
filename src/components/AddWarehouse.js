@@ -25,7 +25,7 @@ export default function AddWarehouse({ setAdded, updateWarehouseModalSetting }) 
     const cancelButtonRef = useRef(null);
 
     const addWarehouse = () => {
-        fetch("http://localhost:4000/api/warehouse/add", {
+        fetch("http://65.1.9.112/api/warehouse/add", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",

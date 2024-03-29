@@ -58,7 +58,7 @@ export default function AddWriteOffDetails({
             return;
         }
 
-        fetch("http://localhost:4000/api/writeoff/add", {
+        fetch("http://65.1.9.112/api/writeoff/add", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",

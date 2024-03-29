@@ -22,7 +22,7 @@ export default function AddBrand({
     };
 
     const addProduct = () => {
-        fetch("http://localhost:4000/api/brand/add", {
+        fetch("http://65.1.9.112/api/brand/add", {
             method: "POST",
             headers: {
                 role: myLoginUser?.roleID?.name,

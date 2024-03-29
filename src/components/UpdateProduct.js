@@ -25,7 +25,7 @@ export default function UpdateProduct({
   };
 
   const updateProduct = () => {
-    fetch("http://localhost:4000/api/product/update", {
+    fetch("http://65.1.9.112/api/product/update", {
       method: "POST",
       headers: {
         role: myLoginUser?.roleID?.name,

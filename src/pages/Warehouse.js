@@ -27,7 +27,7 @@ function Warehouse() {
 
     // Fetching all warehouse data
     const fetchData = () => {
-        fetch(`http://localhost:4000/api/warehouse/get`)
+        fetch(`http://65.1.9.112/api/warehouse/get`)
             .then((response) => response.json())
             .then((data) => {
                 setAllWarehouse(data);

@@ -21,7 +21,7 @@ function Store() {
 
   // Fetching all stores data
   const fetchData = () => {
-    fetch(`http://localhost:4000/api/store/get`)
+    fetch(`http://65.1.9.112/api/store/get`)
       .then((response) => response.json())
       .then((data) => {
         setAllStores(data);

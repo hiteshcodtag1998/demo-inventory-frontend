@@ -10,7 +10,7 @@ function History() {
 
     // Fetching all history data
     const fetchData = () => {
-        fetch(`http://localhost:4000/api/history/get`,
+        fetch(`http://65.1.9.112/api/history/get`,
             {
                 headers: { role: myLoginUser?.roleID?.name }
             })

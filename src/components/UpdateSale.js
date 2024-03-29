@@ -40,7 +40,7 @@ export default function UpdateSale({
             return;
         }
 
-        fetch("http://localhost:4000/api/sales/update", {
+        fetch("http://65.1.9.112/api/sales/update", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",

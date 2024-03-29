@@ -25,7 +25,7 @@ export default function AddStore({ setAdded }) {
   const cancelButtonRef = useRef(null);
 
   const addStore = () => {
-    fetch("http://localhost:4000/api/store/add", {
+    fetch("http://65.1.9.112/api/store/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

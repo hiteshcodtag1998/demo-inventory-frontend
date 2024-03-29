@@ -34,7 +34,7 @@ function Sales() {
 
   // Fetching Data of All Sales
   const fetchSalesData = () => {
-    fetch(`http://localhost:4000/api/sales/get`, {
+    fetch(`http://65.1.9.112/api/sales/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -46,7 +46,7 @@ function Sales() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get`, {
+    fetch(`http://65.1.9.112/api/product/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -58,7 +58,7 @@ function Sales() {
 
   // Fetching Data of All Brrand items
   const fetchBrandData = () => {
-    fetch(`http://localhost:4000/api/brand/get`, {
+    fetch(`http://65.1.9.112/api/brand/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -70,7 +70,7 @@ function Sales() {
 
   // Fetching Data of All Stores
   const fetchStoresData = () => {
-    fetch(`http://localhost:4000/api/store/get`, {
+    fetch(`http://65.1.9.112/api/store/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -81,7 +81,7 @@ function Sales() {
 
   // Fetching Data of All Warehouse items
   const fetchWarehouseData = () => {
-    fetch(`http://localhost:4000/api/warehouse/get`, {
+    fetch(`http://65.1.9.112/api/warehouse/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -100,7 +100,7 @@ function Sales() {
         return newIndexes;
       });
 
-      const response = await axios.post('http://localhost:4000/api/sales/sale-pdf-download', data, {
+      const response = await axios.post('http://65.1.9.112/api/sales/sale-pdf-download', data, {
         responseType: 'arraybuffer',
       });
       console.log('response', response)

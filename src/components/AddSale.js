@@ -61,7 +61,7 @@ export default function AddSale({
       return;
     }
 
-    fetch("http://localhost:4000/api/sales/add", {
+    fetch("http://65.1.9.112/api/sales/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

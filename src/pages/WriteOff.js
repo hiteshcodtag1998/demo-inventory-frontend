@@ -32,7 +32,7 @@ function WriteOffDetails() {
 
     // Fetching Data of All WriteOff items
     const fetchWriteOffData = () => {
-        fetch(`http://localhost:4000/api/writeoff/get`, {
+        fetch(`http://65.1.9.112/api/writeoff/get`, {
             headers: { role: myLoginUser?.roleID?.name }
         })
             .then((response) => response.json())
@@ -44,7 +44,7 @@ function WriteOffDetails() {
 
     // Fetching Data of All Brrand items
     const fetchBrandData = () => {
-        fetch(`http://localhost:4000/api/brand/get`, {
+        fetch(`http://65.1.9.112/api/brand/get`, {
             headers: { role: myLoginUser?.roleID?.name }
         })
             .then((response) => response.json())
@@ -56,7 +56,7 @@ function WriteOffDetails() {
 
     // Fetching Data of All Products
     const fetchProductsData = () => {
-        fetch(`http://localhost:4000/api/product/get`, {
+        fetch(`http://65.1.9.112/api/product/get`, {
             headers: { role: myLoginUser?.roleID?.name }
         })
             .then((response) => response.json())
@@ -68,7 +68,7 @@ function WriteOffDetails() {
 
     // Fetching Data of All Warehouse items
     const fetchWarehouseData = () => {
-        fetch(`http://localhost:4000/api/warehouse/get`, {
+        fetch(`http://65.1.9.112/api/warehouse/get`, {
             headers: { role: myLoginUser?.roleID?.name }
         })
             .then((response) => response.json())
@@ -97,7 +97,7 @@ function WriteOffDetails() {
                 newIndexes[index] = true;
                 return newIndexes;
             });
-            const response = await axios.post('http://localhost:4000/api/writeoff/writeOff-pdf-download', data, {
+            const response = await axios.post('http://65.1.9.112/api/writeoff/writeOff-pdf-download', data, {
                 responseType: 'arraybuffer',
             });
             // Assuming the server returns the PDF content as a blob

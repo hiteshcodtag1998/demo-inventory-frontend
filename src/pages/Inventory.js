@@ -32,7 +32,7 @@ function Inventory() {
 
   // Fetching Data of All Warehouse items
   const fetchWarehouseData = () => {
-    fetch(`http://localhost:4000/api/warehouse/get`, {
+    fetch(`http://65.1.9.112/api/warehouse/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -147,7 +147,7 @@ function Inventory() {
 
   // Fetching Data of All Brrand items
   const fetchBrandData = () => {
-    fetch(`http://localhost:4000/api/brand/get`, {
+    fetch(`http://65.1.9.112/api/brand/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())

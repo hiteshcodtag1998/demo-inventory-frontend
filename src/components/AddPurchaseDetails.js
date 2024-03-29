@@ -57,7 +57,7 @@ export default function AddPurchaseDetails({
       return;
     }
 
-    fetch("http://localhost:4000/api/purchase/add", {
+    fetch("http://65.1.9.112/api/purchase/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

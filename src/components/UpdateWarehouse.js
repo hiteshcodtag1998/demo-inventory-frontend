@@ -25,7 +25,7 @@ export default function UpdateWarehouse({ updateWarehouseData, updateModalSettin
     const cancelButtonRef = useRef(null);
 
     const updateWarehouse = () => {
-        fetch("http://localhost:4000/api/warehouse/update", {
+        fetch("http://65.1.9.112/api/warehouse/update", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",

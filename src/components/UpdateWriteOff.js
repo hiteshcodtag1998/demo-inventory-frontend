@@ -40,7 +40,7 @@ export default function UpdateWriteOff({
             return;
         }
 
-        fetch("http://localhost:4000/api/writeoff/update", {
+        fetch("http://65.1.9.112/api/writeoff/update", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",

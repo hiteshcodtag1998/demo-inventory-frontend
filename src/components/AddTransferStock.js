@@ -44,7 +44,7 @@ export default function AddTransferStockDetails({
     // POST Data
     const addSale = () => {
 
-        fetch("http://localhost:4000/api/transferstock/add", {
+        fetch("http://65.1.9.112/api/transferstock/add", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
