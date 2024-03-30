@@ -13,6 +13,7 @@ export default function UpdateSale({
     warehouses
 }) {
     const { _id, SaleDate, ProductID, BrandID, totalPurchaseAmount, SupplierName, referenceNo, StockSold, warehouseID } = updateSaleData;
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
     const [sale, setSale] = useState({
         saleID: _id,
         userID: authContext.user,
@@ -40,9 +41,11 @@ export default function UpdateSale({
             return;
         }
 
-        fetch("http://65.1.9.112/api/sales/update", {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}sales/update`, {
             method: "POST",
             headers: {
+                role: myLoginUser?.roleID?.name,
+                requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
             body: JSON.stringify(sale),

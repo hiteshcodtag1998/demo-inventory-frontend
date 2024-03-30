@@ -53,10 +53,11 @@ export default function AddProduct({
     }
 
     // Assuming you want to add only the first product for simplicity
-    fetch("http://65.1.9.112/api/product/add", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/add`, {
       method: "POST",
       headers: {
         role: myLoginUser?.roleID?.name,
+        requestBy: myLoginUser?._id,
         "Content-type": "application/json",
       },
       body: JSON.stringify(products),

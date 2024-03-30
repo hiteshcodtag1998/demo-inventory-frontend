@@ -8,7 +8,7 @@ import { toastMessage } from "../utils/handler";
 
 export default function UpdateWarehouse({ updateWarehouseData, updateModalSetting, fetchWarehouseData }) {
     const { _id, name, address, city, category } = updateWarehouseData;
-
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
     const [form, setForm] = useState({
         warehouseID: _id,
         name,
@@ -25,9 +25,11 @@ export default function UpdateWarehouse({ updateWarehouseData, updateModalSettin
     const cancelButtonRef = useRef(null);
 
     const updateWarehouse = () => {
-        fetch("http://65.1.9.112/api/warehouse/update", {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}warehouse/update`, {
             method: "POST",
             headers: {
+                role: myLoginUser?.roleID?.name,
+                requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
             body: JSON.stringify(form),

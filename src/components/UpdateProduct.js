@@ -25,10 +25,11 @@ export default function UpdateProduct({
   };
 
   const updateProduct = () => {
-    fetch("http://65.1.9.112/api/product/update", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/update`, {
       method: "POST",
       headers: {
         role: myLoginUser?.roleID?.name,
+        requestBy: myLoginUser?._id,
         "Content-type": "application/json",
       },
       body: JSON.stringify(product),

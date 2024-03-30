@@ -8,6 +8,7 @@ import { toastMessage } from "../utils/handler";
 
 export default function AddStore({ setAdded }) {
   const authContext = useContext(AuthContext);
+  const myLoginUser = JSON.parse(localStorage.getItem("user"));
   const [form, setForm] = useState({
     userId: authContext.user,
     name: "",
@@ -25,9 +26,11 @@ export default function AddStore({ setAdded }) {
   const cancelButtonRef = useRef(null);
 
   const addStore = () => {
-    fetch("http://65.1.9.112/api/store/add", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}store/add`, {
       method: "POST",
       headers: {
+        role: myLoginUser?.roleID?.name,
+        requestBy: myLoginUser?._id,
         "Content-type": "application/json",
       },
       body: JSON.stringify(form),

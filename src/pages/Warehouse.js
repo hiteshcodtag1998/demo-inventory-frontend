@@ -27,7 +27,7 @@ function Warehouse() {
 
     // Fetching all warehouse data
     const fetchData = () => {
-        fetch(`http://65.1.9.112/api/warehouse/get`)
+        fetch(`${process.env.REACT_APP_API_BASE_URL}warehouse/get`)
             .then((response) => response.json())
             .then((data) => {
                 setAllWarehouse(data);

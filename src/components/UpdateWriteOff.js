@@ -13,6 +13,7 @@ export default function UpdateWriteOff({
     warehouses
 }) {
     const { _id, SaleDate, ProductID, BrandID, totalPurchaseAmount, SupplierName, reason, StockSold, warehouseID } = updateWriteOffData;
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
     const [writeOff, setWriteOff] = useState({
         writeOffID: _id,
         userID: authContext.user,
@@ -40,9 +41,11 @@ export default function UpdateWriteOff({
             return;
         }
 
-        fetch("http://65.1.9.112/api/writeoff/update", {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/update`, {
             method: "POST",
             headers: {
+                role: myLoginUser?.roleID?.name,
+                requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
             body: JSON.stringify(writeOff),

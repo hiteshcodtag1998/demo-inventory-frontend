@@ -32,8 +32,8 @@ function PurchaseDetails() {
 
   // Fetching Data of All Purchase items
   const fetchPurchaseData = () => {
-    fetch(`http://65.1.9.112/api/purchase/get`, {
-      headers: { role: myLoginUser?.roleID?.name }
+    fetch(`${process.env.REACT_APP_API_BASE_URL}purchase/get`, {
+      headers: { role: myLoginUser?.roleID?.name, requestBy: myLoginUser?._id, }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -44,7 +44,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Brrand items
   const fetchBrandData = () => {
-    fetch(`http://65.1.9.112/api/brand/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}brand/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -56,7 +56,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Warehouse items
   const fetchWarehouseData = () => {
-    fetch(`http://65.1.9.112/api/warehouse/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}warehouse/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -68,7 +68,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://65.1.9.112/api/product/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -104,7 +104,7 @@ function PurchaseDetails() {
         return newIndexes;
       });
 
-      const response = await axios.post('http://65.1.9.112/api/purchase/purchase-pdf-download', data, {
+      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}purchase/purchase-pdf-download`, data, {
         responseType: 'arraybuffer',
       });
       // Assuming the server returns the PDF content as a blob

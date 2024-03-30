@@ -13,6 +13,7 @@ export default function UpdatePurchaseDetails({
     warehouses
 }) {
     const { _id, PurchaseDate, ProductID, BrandID, totalPurchaseAmount, SupplierName, referenceNo, QuantityPurchased, warehouseID } = updatePurchaseData;
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
     const [purchase, setPurchase] = useState({
         purchaseID: _id,
         userID: authContext.user,
@@ -40,9 +41,11 @@ export default function UpdatePurchaseDetails({
             return;
         }
 
-        fetch("http://65.1.9.112/api/purchase/update", {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}purchase/update`, {
             method: "POST",
             headers: {
+                role: myLoginUser?.roleID?.name,
+                requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
             body: JSON.stringify(purchase),

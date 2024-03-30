@@ -22,8 +22,10 @@ export default function AddSale({
     stockSold: "",
     saleDate: "",
     totalSaleAmount: "",
-    warehouseID: ""
+    warehouseID: "",
+    supplierName: ""
   }]);
+  const myLoginUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
   const [showBrandModal, setBrandModal] = useState(false);
@@ -48,8 +50,18 @@ export default function AddSale({
       return;
     }
 
+    const salePayload = sale?.map((item, index) => {
+      // Add each item to the submittedItems array
+      if (index !== 0) {
+        item.saleDate = sale[0].saleDate
+        item.warehouseID = sale[0].warehouseID
+        item.supplierName = sale[0].supplierName
+      }
+      return item
+    });
+
     // Check if any product field is null or empty
-    const hasEmptyField = sale.some(
+    const hasEmptyField = salePayload.some(
       (p) =>
         !p?.productID ||
         !p?.stockSold ||
@@ -61,12 +73,14 @@ export default function AddSale({
       return;
     }
 
-    fetch("http://65.1.9.112/api/sales/add", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}sales/add`, {
       method: "POST",
       headers: {
+        role: myLoginUser?.roleID?.name,
+        requestBy: myLoginUser?._id,
         "Content-type": "application/json",
       },
-      body: JSON.stringify(sale),
+      body: JSON.stringify(salePayload),
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -244,50 +258,53 @@ export default function AddSale({
                                 placeholder="0 - 999"
                               />
                             </div>
-                            <div>
-                              <label
-                                htmlFor="supplierName"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              >
-                                Supplier Name
-                              </label>
-                              <input
-                                type="text"
-                                name="supplierName"
-                                id="supplierName"
-                                value={sale.supplierName}
-                                onChange={(e) =>
-                                  handleInputChange(index, e.target.name, e.target.value)
-                                }
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Enter Supplier Name"
-                              />
-                            </div>
-                            <div>
-                              <label
-                                htmlFor="warehouseID"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              >
-                                Warehouse Name
-                              </label>
-                              <select
-                                id="warehouseID"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                name="warehouseID"
-                                onChange={(e) =>
-                                  handleInputChange(index, e.target.name, e.target.value)
-                                }
-                              >
-                                <option selected="">Select Warehouse</option>
-                                {warehouses.map((element, index) => {
-                                  return (
-                                    <option key={element._id} value={element._id}>
-                                      {element.name}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            </div>
+                            {index === 0 &&
+                              <>
+                                <div>
+                                  <label
+                                    htmlFor="supplierName"
+                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                  >
+                                    Supplier Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="supplierName"
+                                    id="supplierName"
+                                    value={sale.supplierName}
+                                    onChange={(e) =>
+                                      handleInputChange(index, e.target.name, e.target.value)
+                                    }
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    placeholder="Enter Supplier Name"
+                                  />
+                                </div>
+                                <div>
+                                  <label
+                                    htmlFor="warehouseID"
+                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                  >
+                                    Warehouse Name
+                                  </label>
+                                  <select
+                                    id="warehouseID"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    name="warehouseID"
+                                    onChange={(e) =>
+                                      handleInputChange(index, e.target.name, e.target.value)
+                                    }
+                                  >
+                                    <option selected="">Select Warehouse</option>
+                                    {warehouses.map((element, index) => {
+                                      return (
+                                        <option key={element._id} value={element._id}>
+                                          {element.name}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                </div>
+                              </>}
 
                             {/*Code for future ref
                           <div>
@@ -340,29 +357,32 @@ export default function AddSale({
                                 Add Brand
                               </Button>
                             </div> */}
-                            <div className="h-fit w-full">
-                              {/* <Datepicker
+                            {index === 0 &&
+                              <div className="h-fit w-full">
+                                {/* <Datepicker
                               onChange={handleChange}
                               show={show}
                               setShow={handleClose}
                             /> */}
-                              <label
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                htmlFor="salesDate"
-                              >
-                                Sales Date
-                              </label>
-                              <input
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                type="date"
-                                id="saleDate"
-                                name="saleDate"
-                                value={sale.saleDate}
-                                onChange={(e) =>
-                                  handleInputChange(index, e.target.name, e.target.value)
-                                }
-                              />
-                            </div><div>
+                                <label
+                                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                  htmlFor="salesDate"
+                                >
+                                  Sales Date
+                                </label>
+                                <input
+                                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                  type="date"
+                                  id="saleDate"
+                                  name="saleDate"
+                                  value={sale.saleDate}
+                                  onChange={(e) =>
+                                    handleInputChange(index, e.target.name, e.target.value)
+                                  }
+                                />
+                              </div>
+                            }
+                            <div>
                               <label
                                 htmlFor="referenceNo"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

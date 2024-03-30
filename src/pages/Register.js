@@ -23,7 +23,7 @@ function Register() {
 
   // Register User
   const registerUser = () => {
-    fetch("http://65.1.9.112/api/register", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}register`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",

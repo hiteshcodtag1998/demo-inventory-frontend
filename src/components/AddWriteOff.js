@@ -14,7 +14,7 @@ export default function AddWriteOffDetails({
     brands,
     warehouses
 }) {
-    const [purchase, setPurchase] = useState([{
+    const [writeOff, setPurchase] = useState([{
         userID: authContext.user,
         productID: "",
         storeID: "",
@@ -23,13 +23,14 @@ export default function AddWriteOffDetails({
         totalSaleAmount: "",
         warehouseID: ""
     }]);
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
     const [showBrandModal, setBrandModal] = useState(false);
 
     // Handling Input Change for input fields
     const handleInputChange = (index, key, value) => {
-        const updatedSales = [...purchase];
+        const updatedSales = [...writeOff];
         if (key === 'productID') {
             const brandInfo = products?.find(p => p._id === value)?.BrandID;
             updatedSales[index] = { ...updatedSales[index], ['brandID']: brandInfo?._id };
@@ -40,13 +41,23 @@ export default function AddWriteOffDetails({
 
     // POST Data
     const addSale = () => {
-        if (purchase?.length === 0) {
+        if (writeOff?.length === 0) {
             toastMessage("Please add sale", TOAST_TYPE.TYPE_ERROR)
             return;
         }
 
+        // const writeOffPayload = writeOff?.map((item, index) => {
+        //     // Add each item to the submittedItems array
+        //     if (index !== 0) {
+        //         item.saleDate = writeOff[0].saleDate
+        //         item.warehouseID = writeOff[0].warehouseID
+        //         item.supplierName = writeOff[0].supplierName
+        //     }
+        //     return item
+        // });
+
         // Check if any product field is null or empty
-        const hasEmptyField = purchase.some(
+        const hasEmptyField = writeOff.some(
             (p) =>
                 !p?.productID ||
                 !p?.stockSold ||
@@ -58,12 +69,14 @@ export default function AddWriteOffDetails({
             return;
         }
 
-        fetch("http://65.1.9.112/api/writeoff/add", {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/add`, {
             method: "POST",
             headers: {
+                role: myLoginUser?.roleID?.name,
+                requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(purchase),
+            body: JSON.stringify(writeOff),
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -83,7 +96,7 @@ export default function AddWriteOffDetails({
     };
 
     const handleAddForm = () => {
-        setPurchase([...purchase, {
+        setPurchase([...writeOff, {
             userID: authContext.user,
             productID: "",
             storeID: "",
@@ -147,7 +160,7 @@ export default function AddWriteOffDetails({
                                             >
                                                 Add WriteOff
                                             </Dialog.Title>
-                                            {purchase.map((p, index) => (
+                                            {writeOff.map((p, index) => (
                                                 <form action="#">
                                                     <div className="flex justify-between items-center mt-5">
                                                         <span>WriteOff: {index + 1}</span>
@@ -208,7 +221,7 @@ export default function AddWriteOffDetails({
                                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                                 name="brandID"
                                                                 disabled={true}
-                                                                value={purchase[index]?.brandID || ''}
+                                                                value={writeOff[index]?.brandID || ''}
                                                                 onChange={(e) => handleInputChange(index, e.target.name, e.target.value)}
                                                             >
                                                                 <option selected="">Select Brand</option>
@@ -230,7 +243,7 @@ export default function AddWriteOffDetails({
                                                                 type="number"
                                                                 name="stockSold"
                                                                 id="stockSold"
-                                                                value={purchase.stockSold}
+                                                                value={writeOff[index]?.stockSold || ''}
                                                                 onChange={(e) =>
                                                                     handleInputChange(index, e.target.name, e.target.value)
                                                                 }
@@ -249,7 +262,7 @@ export default function AddWriteOffDetails({
                                                                 type="text"
                                                                 name="supplierName"
                                                                 id="supplierName"
-                                                                value={purchase.supplierName}
+                                                                value={writeOff.supplierName}
                                                                 onChange={(e) =>
                                                                     handleInputChange(index, e.target.name, e.target.value)
                                                                 }
@@ -257,6 +270,7 @@ export default function AddWriteOffDetails({
                                                                 placeholder="Enter Supplier Name"
                                                             />
                                                         </div> */}
+
                                                         <div>
                                                             <label
                                                                 htmlFor="warehouseID"
@@ -293,7 +307,7 @@ export default function AddWriteOffDetails({
                                                                 type="text"
                                                                 name="storeName"
                                                                 id="storeName"
-                                                                value={purchase.storeName}
+                                                                value={writeOff.storeName}
                                                                 onChange={(e) =>
                                                                     handleInputChange(index, e.target.name, e.target.value)
                                                                 }
@@ -319,7 +333,7 @@ export default function AddWriteOffDetails({
                                                                 type="date"
                                                                 id="saleDate"
                                                                 name="saleDate"
-                                                                value={purchase.saleDate}
+                                                                value={writeOff[index]?.saleDate || ''}
                                                                 onChange={(e) =>
                                                                     handleInputChange(index, e.target.name, e.target.value)
                                                                 }
@@ -337,7 +351,7 @@ export default function AddWriteOffDetails({
                                                             type="text"
                                                             name="reason"
                                                             id="reason"
-                                                            value={purchase.reason}
+                                                            value={writeOff[index]?.reason || ''}
                                                             onChange={(e) =>
                                                                 handleInputChange(index, e.target.name, e.target.value)
                                                             }

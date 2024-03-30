@@ -21,7 +21,7 @@ function Store() {
 
   // Fetching all stores data
   const fetchData = () => {
-    fetch(`http://65.1.9.112/api/store/get`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}store/get`)
       .then((response) => response.json())
       .then((data) => {
         setAllStores(data);

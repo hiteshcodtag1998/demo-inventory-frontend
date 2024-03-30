@@ -24,6 +24,7 @@ export default function AddTransferStockDetails({
         toWarehouseID: "",
         brandID: ""
     });
+    const myLoginUser = JSON.parse(localStorage.getItem("user"));
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
     const [showBrandModal, setBrandModal] = useState(false);
@@ -44,9 +45,11 @@ export default function AddTransferStockDetails({
     // POST Data
     const addSale = () => {
 
-        fetch("http://65.1.9.112/api/transferstock/add", {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}transferstock/add`, {
             method: "POST",
             headers: {
+                role: myLoginUser?.roleID?.name,
+                requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
             body: JSON.stringify(purchase),

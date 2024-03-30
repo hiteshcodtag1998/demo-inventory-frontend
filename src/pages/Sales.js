@@ -34,8 +34,8 @@ function Sales() {
 
   // Fetching Data of All Sales
   const fetchSalesData = () => {
-    fetch(`http://65.1.9.112/api/sales/get`, {
-      headers: { role: myLoginUser?.roleID?.name }
+    fetch(`${process.env.REACT_APP_API_BASE_URL}sales/get`, {
+      headers: { role: myLoginUser?.roleID?.name, requestBy: myLoginUser?._id, }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -46,7 +46,7 @@ function Sales() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://65.1.9.112/api/product/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -58,7 +58,7 @@ function Sales() {
 
   // Fetching Data of All Brrand items
   const fetchBrandData = () => {
-    fetch(`http://65.1.9.112/api/brand/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}brand/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -70,7 +70,7 @@ function Sales() {
 
   // Fetching Data of All Stores
   const fetchStoresData = () => {
-    fetch(`http://65.1.9.112/api/store/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}store/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -81,7 +81,7 @@ function Sales() {
 
   // Fetching Data of All Warehouse items
   const fetchWarehouseData = () => {
-    fetch(`http://65.1.9.112/api/warehouse/get`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}warehouse/get`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -100,7 +100,7 @@ function Sales() {
         return newIndexes;
       });
 
-      const response = await axios.post('http://65.1.9.112/api/sales/sale-pdf-download', data, {
+      const response = await axios.post('REACT_APP_API_BASE_URLsales/sale-pdf-download', data, {
         responseType: 'arraybuffer',
       });
       console.log('response', response)

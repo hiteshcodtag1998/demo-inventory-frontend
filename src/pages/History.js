@@ -10,9 +10,9 @@ function History() {
 
     // Fetching all history data
     const fetchData = () => {
-        fetch(`http://65.1.9.112/api/history/get`,
+        fetch(`${process.env.REACT_APP_API_BASE_URL}history/get`,
             {
-                headers: { role: myLoginUser?.roleID?.name }
+                headers: { role: myLoginUser?.roleID?.name, requestBy: myLoginUser?._id, }
             })
             .then((response) => response.json())
             .then((data) => {
@@ -35,6 +35,7 @@ function History() {
                                 {element?.notes ? <span>Notes: ${element.notes}</span> : ""}
                                 {element?.productCode ? <span>ProductCode: {element.productCode}</span> : ""}
                                 <span>{element?.createdAt ? new Date(element?.createdAt).toLocaleString() : ""}</span>
+                                {element?.updatedById ? <span>CreatedBy: {element.updatedById?.email}</span> : ""}
                             </div>
                         </div>
                     );
