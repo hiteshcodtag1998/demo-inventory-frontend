@@ -52,6 +52,7 @@ export default function AddPurchaseDetails({
         item.purchaseDate = purchase[0].purchaseDate
         item.warehouseID = purchase[0].warehouseID
         item.supplierName = purchase[0].supplierName
+        item.referenceNo = purchase[0].referenceNo
       }
       return item
     });
@@ -204,7 +205,29 @@ export default function AddPurchaseDetails({
                               </select>
 
                             </div>
+
                             <div>
+                              <label
+                                htmlFor="quantityPurchased"
+                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              >
+                                Quantity Purchased
+                              </label>
+                              <input
+                                type="number"
+                                name="quantityPurchased"
+                                id="quantityPurchased"
+                                value={purchase.quantityPurchased}
+                                onChange={(e) =>
+                                  handleInputChange(index, e.target.name, e.target.value)
+                                }
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="0 - 999"
+                              />
+                            </div>
+                          </div>
+                          <div className={`grid gap-4 mb-4 ${index !== 0 ? "sm:grid-cols-1" : "sm:grid-cols-2"}`}>
+                            <div className="w-full">
                               <label
                                 htmlFor="brandID"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -226,25 +249,6 @@ export default function AddPurchaseDetails({
                                   </option>
                                 ))}
                               </select>
-                            </div>
-                            <div>
-                              <label
-                                htmlFor="quantityPurchased"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              >
-                                Quantity Purchased
-                              </label>
-                              <input
-                                type="number"
-                                name="quantityPurchased"
-                                id="quantityPurchased"
-                                value={purchase.quantityPurchased}
-                                onChange={(e) =>
-                                  handleInputChange(index, e.target.name, e.target.value)
-                                }
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="0 - 999"
-                              />
                             </div>
                             {index === 0 &&
                               <><div>
@@ -293,7 +297,8 @@ export default function AddPurchaseDetails({
                                   </select>
                                 </div></>
                             }
-
+                          </div>
+                          <div className="grid gap-4 mb-4 sm:grid-cols-2">
                             {/* <div>
                               <label
                                 htmlFor="storeName"
@@ -339,49 +344,52 @@ export default function AddPurchaseDetails({
                               </Button>
                             </div> */}
                             {index === 0 &&
-                              <div className="h-fit w-full">
-                                {/* <Datepicker
+                              <>
+                                <div className="h-fit w-full">
+                                  {/* <Datepicker
                               onChange={handleChange}
                               show={show}
                               setShow={handleClose}
                             /> */}
-                                <label
-                                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                  htmlFor="purchaseDate"
-                                >
-                                  Purchase Date
-                                </label>
-                                <input
-                                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                  type="date"
-                                  id="purchaseDate"
-                                  name="purchaseDate"
-                                  value={purchase.purchaseDate}
-                                  onChange={(e) =>
-                                    handleInputChange(index, e.target.name, e.target.value)
-                                  }
-                                />
-                              </div>
+                                  <label
+                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    htmlFor="purchaseDate"
+                                  >
+                                    Purchase Date
+                                  </label>
+                                  <input
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    type="date"
+                                    id="purchaseDate"
+                                    name="purchaseDate"
+                                    value={purchase.purchaseDate}
+                                    onChange={(e) =>
+                                      handleInputChange(index, e.target.name, e.target.value)
+                                    }
+                                  />
+                                </div>
+
+                                <div>
+                                  <label
+                                    htmlFor="referenceNo"
+                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                  >
+                                    Reference Number
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="referenceNo"
+                                    id="referenceNo"
+                                    value={purchase.referenceNo}
+                                    onChange={(e) =>
+                                      handleInputChange(index, e.target.name, e.target.value)
+                                    }
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    placeholder="Enter Reference Number"
+                                  />
+                                </div>
+                              </>
                             }
-                            <div>
-                              <label
-                                htmlFor="referenceNo"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              >
-                                Reference Number
-                              </label>
-                              <input
-                                type="text"
-                                name="referenceNo"
-                                id="referenceNo"
-                                value={purchase.referenceNo}
-                                onChange={(e) =>
-                                  handleInputChange(index, e.target.name, e.target.value)
-                                }
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Enter Reference Number"
-                              />
-                            </div>
                           </div>
                           <div className="flex items-center space-x-4">
                             {/* <button

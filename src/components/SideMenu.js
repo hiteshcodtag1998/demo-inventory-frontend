@@ -2,8 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { SlDocs } from "react-icons/sl";
 import { RxDashboard } from "react-icons/rx";
-import { RiFileDamageFill } from "react-icons/ri";
-import { FcSalesPerformance } from "react-icons/fc";
+import { RiFileDamageFill, RiBarChart2Line } from "react-icons/ri";
 import { BiPurchaseTag, BiTransfer } from "react-icons/bi";
 import { MdHistory, MdOutlineInventory, MdOutlineWarehouse } from "react-icons/md";
 
@@ -44,7 +43,7 @@ function SideMenu() {
             to="/sales"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           >
-            <FcSalesPerformance />
+            <RiBarChart2Line />
             <span className="text-sm font-medium"> Sales</span>
           </Link>
           <Link
