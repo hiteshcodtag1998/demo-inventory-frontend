@@ -100,7 +100,7 @@ function Sales() {
         return newIndexes;
       });
 
-      const response = await axios.post('REACT_APP_API_BASE_URLsales/sale-pdf-download', data, {
+      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}sales/sale-pdf-download`, data, {
         responseType: 'arraybuffer',
       });
       console.log('response', response)
