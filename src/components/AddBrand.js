@@ -30,14 +30,17 @@ export default function AddBrand({
             },
             body: JSON.stringify(brand),
         })
-            .then(() => {
+            .then(async (res) => {
+                if (!res.ok) {
+                    const errorData = await res.json(); // Assuming the error response is in JSON format
+                    throw new Error(errorData.message || "Something went wrong on the server");
+                }
+
                 toastMessage("Brand ADDED", TOAST_TYPE.TYPE_SUCCESS)
                 handlePageUpdate();
                 addBrandModalSetting();
             })
-            .catch((err) =>
-                toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR)
-            );
+            .catch((err) => { toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR) });
     };
 
     return (

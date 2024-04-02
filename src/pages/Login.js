@@ -119,7 +119,7 @@ function Login() {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   id="remember-me"
                   name="remember-me"
@@ -132,15 +132,15 @@ function Login() {
                 >
                   Remember me
                 </label>
-              </div>
+              </div> */}
 
-              <div className="text-sm">
+              {/* <div className="text-sm">
                 <span
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot your password?
                 </span>
-              </div>
+              </div> */}
             </div>
 
             <div>
@@ -157,7 +157,7 @@ function Login() {
                 </span>
                 Sign in
               </button>
-              <p className="mt-2 text-center text-sm text-gray-600">
+              {/* <p className="mt-2 text-center text-sm text-gray-600">
                 Or{" "}
                 <span
                   className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -165,7 +165,7 @@ function Login() {
                   Don't Have an Account, Please{" "}
                   <Link to="/register"> Register now </Link>
                 </span>
-              </p>
+              </p> */}
             </div>
           </form>
         </div>

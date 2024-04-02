@@ -21,16 +21,16 @@ function SideMenu() {
             <span className="text-sm font-medium"> Dashboard </span>
           </Link>
 
-          <details className="group [&_summary::-webkit-details-marker]:hidden">
-            <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-              <Link to="/inventory">
+          <Link to="/inventory">
+            <details className="group [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                 <div className="flex items-center gap-2">
                   <MdOutlineInventory />
                   <span className="text-sm font-medium"> Inventory </span>
                 </div>
-              </Link>
-            </summary>
-          </details>
+              </summary>
+            </details>
+          </Link>
 
           <Link
             to="/purchase-details"
@@ -88,16 +88,16 @@ function SideMenu() {
             </summary>
           </details> */}
 
-          <details className="group [&_summary::-webkit-details-marker]:hidden">
-            <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-              <Link to="/history">
+          <Link to="/history">
+            <details className="group [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                 <div className="flex items-center gap-2">
                   <MdHistory />
                   <span className="text-sm font-medium"> History </span>
                 </div>
-              </Link>
-            </summary>
-          </details>
+              </summary>
+            </details>
+          </Link>
         </nav>
       </div>
 
