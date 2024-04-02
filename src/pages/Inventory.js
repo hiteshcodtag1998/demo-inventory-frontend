@@ -73,13 +73,13 @@ function Inventory() {
     })
       .then((response) => response.json())
       .then((data) => {
-        data = data?.map(d => {
+        const updatedData = data?.map(d => {
           if (d?.productID) {
             d = { ...d, name: d?.productID?.name, productCode: d?.productID?.productCode, description: d?.productID?.description }
           }
           return d;
         })
-        setAllProducts(data);
+        setAllProducts(updatedData);
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
@@ -127,14 +127,17 @@ function Inventory() {
 
   // Handle Search Term
   const handleSearchTerm = (e) => {
+
     setSearchTerm(e.target.value);
     fetchSearchData(e.target.value);
   };
 
   // Handle Search Term
   const handleWarehouse = (value) => {
-    setSelectWarehouse(value);
-    fetchProductByWarehouse(value)
+    if (value) {
+      setSelectWarehouse(value);
+      fetchProductByWarehouse(value)
+    }
   };
 
   const handleClickOpen = () => {
@@ -370,7 +373,7 @@ function Inventory() {
               }
               {products.map((element, index) => {
                 return (
-                  <tr key={element._id}>
+                  <tr key={index}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element.name}
                     </td>

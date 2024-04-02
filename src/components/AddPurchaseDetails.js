@@ -107,6 +107,23 @@ export default function AddPurchaseDetails({
     setPurchase(updatedProducts);
   };
 
+  function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let day = today.getDate();
+
+    // Format month and day to have leading zeros if necessary
+    if (month < 10) {
+      month = '0' + month;
+    }
+    if (day < 10) {
+      day = '0' + day;
+    }
+
+    return `${year}-${month}-${day}`;
+  }
+
   return (
     // Modal
     <Transition.Root show={open} as={Fragment}>
@@ -360,6 +377,7 @@ export default function AddPurchaseDetails({
                                   <input
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     type="date"
+                                    max={getCurrentDate()}
                                     id="purchaseDate"
                                     name="purchaseDate"
                                     value={purchase.purchaseDate}
