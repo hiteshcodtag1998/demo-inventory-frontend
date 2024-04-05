@@ -69,6 +69,16 @@ export default function AddWriteOffDetails({
             return;
         }
 
+        const hasFieldLessthanZero = writeOff.some(
+            (p) =>
+                p?.stockSold < 1
+        )
+
+        if (hasFieldLessthanZero) {
+            toastMessage("Purchase quantity should be grater than zero", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/add`, {
             method: "POST",
             headers: {

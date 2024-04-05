@@ -45,6 +45,34 @@ export default function AddTransferStockDetails({
     // POST Data
     const addSale = () => {
 
+        // Check if any product field is null or empty
+        const hasEmptyField = Object.values(purchase).some(p => {
+            return (
+                !p ||
+                !p.productID ||
+                !p.quantityPurchased ||
+                !p.purchaseDate
+            );
+        });
+
+        // Check if any purchase quantity is less than 1
+        const hasFieldLessThanZero = Object.values(purchase).some(p => {
+            return (
+                !p ||
+                p.quantityPurchased < 1
+            );
+        });
+
+        if (hasEmptyField) {
+            toastMessage("Please fill in all fields for each purchase", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
+
+        if (hasFieldLessThanZero) {
+            toastMessage("Transfer quantity should be grater than zero", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}transferstock/add`, {
             method: "POST",
             headers: {

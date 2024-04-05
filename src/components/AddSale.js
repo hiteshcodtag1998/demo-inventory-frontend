@@ -69,8 +69,18 @@ export default function AddSale({
         !p?.saleDate
     )
 
+    const hasFieldLessthanZero = salePayload.some(
+      (p) =>
+        p?.stockSold < 1
+    )
+
     if (hasEmptyField) {
       toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
+      return;
+    }
+
+    if (hasFieldLessthanZero) {
+      toastMessage("Sale quantity should be grater than zero", TOAST_TYPE.TYPE_ERROR);
       return;
     }
 

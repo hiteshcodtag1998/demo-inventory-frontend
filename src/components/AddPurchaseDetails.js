@@ -65,8 +65,18 @@ export default function AddPurchaseDetails({
         !p?.purchaseDate
     )
 
+    const hasFieldLessthanZero = purchasePayload.some(
+      (p) =>
+        p?.quantityPurchased < 1
+    )
+
     if (hasEmptyField) {
       toastMessage("Please fill in all fields for each purchase", TOAST_TYPE.TYPE_ERROR);
+      return;
+    }
+
+    if (hasFieldLessthanZero) {
+      toastMessage("Purchase quantity should be grater than zero", TOAST_TYPE.TYPE_ERROR);
       return;
     }
 

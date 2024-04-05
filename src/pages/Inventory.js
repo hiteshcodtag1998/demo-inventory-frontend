@@ -56,7 +56,7 @@ function Inventory() {
 
   // Fetching Data of Search Products
   const fetchSearchData = (searchItem) => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}product/search?searchTerm=${searchItem}`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/search?searchTerm=${searchItem}&selectWarehouse=${selectWarehouse || ""}`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -67,8 +67,8 @@ function Inventory() {
   };
 
   // Fetching Data of Search Products
-  const fetchProductByWarehouse = (searchItem) => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}product/select-by-warehouse?selectWarehouse=${searchItem}`, {
+  const fetchProductByWarehouse = (selectWarehouseVal) => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/search?selectWarehouse=${selectWarehouseVal}&searchTerm=${searchTerm || ''}`, {
       headers: { role: myLoginUser?.roleID?.name }
     })
       .then((response) => response.json())
@@ -375,13 +375,13 @@ function Inventory() {
                 return (
                   <tr key={index}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.name}
+                      {element?.name || element.productID.name}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element?.productID?.BrandID?.name || element?.BrandID?.name}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.productCode}
+                      {element?.productCode || element.productID.productCode}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.stock}
