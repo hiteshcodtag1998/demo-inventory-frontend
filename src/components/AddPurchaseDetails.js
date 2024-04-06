@@ -5,6 +5,9 @@ import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from "moment";
 
 export default function AddPurchaseDetails({
   addSaleModalSetting,
@@ -49,10 +52,12 @@ export default function AddPurchaseDetails({
     const purchasePayload = purchase?.map((item, index) => {
       // Add each item to the submittedItems array
       if (index !== 0) {
-        item.purchaseDate = purchase[0].purchaseDate
+        item.purchaseDate = moment(new Date(purchase[0].purchaseDate)).format('DD-MM-YYYY')
         item.warehouseID = purchase[0].warehouseID
         item.supplierName = purchase[0].supplierName
         item.referenceNo = purchase[0].referenceNo
+      } else {
+        item.purchaseDate = moment(new Date(purchase[index].purchaseDate)).format('DD-MM-YYYY')
       }
       return item
     });
@@ -384,7 +389,16 @@ export default function AddPurchaseDetails({
                                   >
                                     Purchase Date
                                   </label>
-                                  <input
+                                  <DatePicker
+                                    dateFormat="dd-MM-yyyy"
+                                    selected={purchase[index]?.purchaseDate ? new Date(purchase[index].purchaseDate) : ""}
+                                    placeholderText="dd-mm-yyyy"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    onChange={(date) => {
+                                      handleInputChange(index, 'purchaseDate', date)
+                                    }}
+                                  />
+                                  {/* <input
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     type="date"
                                     max={getCurrentDate()}
@@ -392,9 +406,9 @@ export default function AddPurchaseDetails({
                                     name="purchaseDate"
                                     value={purchase.purchaseDate}
                                     onChange={(e) =>
-                                      handleInputChange(index, e.target.name, e.target.value)
+                                      handleInputChange(index, e.target.name, fromInputFormat(e.target.value))
                                     }
-                                  />
+                                  /> */}
                                 </div>
 
                                 <div>

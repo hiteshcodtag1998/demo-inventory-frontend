@@ -129,7 +129,7 @@ function TransferStockDetails() {
                                     Receiving Location
                                 </th>
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                                    Purchase Date
+                                    Transfer Date
                                 </th>
                                 {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Total Purchase Amount

@@ -5,6 +5,9 @@ import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from "moment";
 
 export default function AddWriteOffDetails({
     addSaleModalSetting,
@@ -57,12 +60,7 @@ export default function AddWriteOffDetails({
         // });
 
         // Check if any product field is null or empty
-        const hasEmptyField = writeOff.some(
-            (p) =>
-                !p?.productID ||
-                !p?.stockSold ||
-                !p?.saleDate
-        )
+        const hasEmptyField = !writeOff || !writeOff.productID || !writeOff.stockSold || !writeOff.saleDate;
 
         if (hasEmptyField) {
             toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
@@ -79,6 +77,8 @@ export default function AddWriteOffDetails({
             return;
         }
 
+        const payload = { ...writeOff, saleDate: moment(new Date(writeOff.saleDate)).format('DD-MM-YYYY') }
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/add`, {
             method: "POST",
             headers: {
@@ -86,7 +86,7 @@ export default function AddWriteOffDetails({
                 requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(writeOff),
+            body: JSON.stringify(payload),
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -338,7 +338,16 @@ export default function AddWriteOffDetails({
                                                             >
                                                                 WriteOff Date
                                                             </label>
-                                                            <input
+                                                            <DatePicker
+                                                                dateFormat="dd-MM-yyyy"
+                                                                selected={writeOff[index]?.saleDate ? new Date(writeOff[index]?.saleDate) : ""}
+                                                                placeholderText="dd-mm-yyyy"
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                onChange={(date) => {
+                                                                    handleInputChange(index, 'saleDate', date)
+                                                                }}
+                                                            />
+                                                            {/* <input
                                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                                 type="date"
                                                                 id="saleDate"
@@ -347,7 +356,7 @@ export default function AddWriteOffDetails({
                                                                 onChange={(e) =>
                                                                     handleInputChange(index, e.target.name, e.target.value)
                                                                 }
-                                                            />
+                                                            /> */}
                                                         </div>
                                                     </div>
                                                     <div>

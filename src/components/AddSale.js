@@ -5,6 +5,9 @@ import { toastMessage } from "../utils/handler";
 import { TOAST_TYPE } from "../utils/constant";
 import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from "moment";
 
 export default function AddSale({
   addSaleModalSetting,
@@ -53,10 +56,12 @@ export default function AddSale({
     const salePayload = sale?.map((item, index) => {
       // Add each item to the submittedItems array
       if (index !== 0) {
-        item.saleDate = sale[0].saleDate
+        item.saleDate = moment(new Date(sale[0].saleDate)).format('DD-MM-YYYY')
         item.warehouseID = sale[0].warehouseID
         item.supplierName = sale[0].supplierName
         item.referenceNo = sale[0].referenceNo
+      } else {
+        item.saleDate = moment(new Date(sale[index].saleDate)).format('DD-MM-YYYY')
       }
       return item
     });
@@ -387,7 +392,16 @@ export default function AddSale({
                                   >
                                     Sales Date
                                   </label>
-                                  <input
+                                  <DatePicker
+                                    dateFormat="dd-MM-yyyy"
+                                    selected={sale[index]?.saleDate ? new Date(sale[index].saleDate) : ""}
+                                    placeholderText="dd-mm-yyyy"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    onChange={(date) => {
+                                      handleInputChange(index, 'saleDate', date)
+                                    }}
+                                  />
+                                  {/* <input
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     type="date"
                                     id="saleDate"
@@ -396,7 +410,7 @@ export default function AddSale({
                                     onChange={(e) =>
                                       handleInputChange(index, e.target.name, e.target.value)
                                     }
-                                  />
+                                  /> */}
                                 </div>
                                 <div>
                                   <label

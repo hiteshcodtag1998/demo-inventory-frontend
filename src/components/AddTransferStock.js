@@ -5,6 +5,9 @@ import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from "moment";
 
 export default function AddTransferStockDetails({
     addSaleModalSetting,
@@ -46,19 +49,11 @@ export default function AddTransferStockDetails({
     const addSale = () => {
 
         // Check if any product field is null or empty
-        const hasEmptyField = Object.values(purchase).some(p => {
-            return (
-                !p ||
-                !p.productID ||
-                !p.quantityPurchased ||
-                !p.purchaseDate
-            );
-        });
+        const hasEmptyField = !purchase || !purchase.productID || !purchase.quantityPurchased || !purchase.purchaseDate;
 
         // Check if any purchase quantity is less than 1
         const hasFieldLessThanZero = Object.values(purchase).some(p => {
             return (
-                !p ||
                 p.quantityPurchased < 1
             );
         });
@@ -73,6 +68,8 @@ export default function AddTransferStockDetails({
             return;
         }
 
+        const payload = { ...purchase, purchaseDate: moment(new Date(purchase.purchaseDate)).format('DD-MM-YYYY') }
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}transferstock/add`, {
             method: "POST",
             headers: {
@@ -80,7 +77,7 @@ export default function AddTransferStockDetails({
                 requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(purchase),
+            body: JSON.stringify(payload),
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -356,7 +353,16 @@ export default function AddTransferStockDetails({
                                                         >
                                                             Transfer Date
                                                         </label>
-                                                        <input
+                                                        <DatePicker
+                                                            dateFormat="dd-MM-yyyy"
+                                                            selected={purchase?.purchaseDate ? new Date(purchase.purchaseDate) : ""}
+                                                            placeholderText="dd-mm-yyyy"
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            onChange={(date) => {
+                                                                handleInputChange('purchaseDate', date)
+                                                            }}
+                                                        />
+                                                        {/* <input
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             type="date"
                                                             id="purchaseDate"
@@ -365,7 +371,7 @@ export default function AddTransferStockDetails({
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
-                                                        />
+                                                        /> */}
                                                     </div>
                                                 </div>
                                                 {/* <div className="flex items-center space-x-4">
