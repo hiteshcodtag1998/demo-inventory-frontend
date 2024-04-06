@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { SlDocs } from "react-icons/sl";
 import { RxDashboard } from "react-icons/rx";
@@ -8,6 +8,9 @@ import { MdHistory, MdOutlineInventory, MdOutlineWarehouse } from "react-icons/m
 
 function SideMenu() {
   const localStorageData = JSON.parse(localStorage.getItem("user"));
+  const [activeTab, setActiveTab] = useState("inventory");
+
+  console.log('activeTab', activeTab)
 
   return (
     <div className="h-full flex-col justify-between  bg-white hidden lg:flex ">
@@ -15,15 +18,19 @@ function SideMenu() {
         <nav aria-label="Main Nav" className="mt-6 flex flex-col space-y-1">
           <Link
             to="/"
-            className="flex items-center gap-2 rounded-lg hover:bg-gray-100 px-4 py-2 text-gray-700"
+            onClick={() => setActiveTab("dashboard")}
+            className={`flex items-center gap-2 rounded-lg hover:bg-gray-100 px-4 py-2 ${activeTab == "dashboard" ? "text-yellow-500" : "text-gray-700"}`}
           >
             <RxDashboard />
             <span className="text-sm font-medium"> Dashboard </span>
           </Link>
 
-          <Link to="/inventory">
+          <Link to="/inventory"
+            onClick={() => setActiveTab("inventory")}
+
+          >
             <details className="group [&_summary::-webkit-details-marker]:hidden">
-              <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+              <summary className={`flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 ${activeTab == "inventory" ? "text-yellow-500" : "text-gray-500"} hover:bg-gray-100`}>
                 <div className="flex items-center gap-2">
                   <MdOutlineInventory />
                   <span className="text-sm font-medium"> Inventory </span>
@@ -34,35 +41,40 @@ function SideMenu() {
 
           <Link
             to="/purchase-details"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            onClick={() => setActiveTab("purchase")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 ${activeTab == "purchase" ? "text-yellow-500" : "text-gray-500"} hover:bg-gray-100`}
           >
             <BiPurchaseTag />
             <span className="text-sm font-medium"> Purchase Details</span>
           </Link>
           <Link
             to="/sales"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            onClick={() => setActiveTab("sales")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 ${activeTab == "sales" ? "text-yellow-500" : "text-gray-500"} text-gray-500 hover:bg-gray-100`}
           >
             <RiBarChart2Line />
             <span className="text-sm font-medium"> Sales</span>
           </Link>
           <Link
             to="/transferstock"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            onClick={() => setActiveTab("transferstock")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 ${activeTab == "transferstock" ? "text-yellow-500" : "text-gray-500"} hover:bg-gray-100`}
           >
             <BiTransfer />
             <span className="text-sm font-medium"> Transfer Stock</span>
           </Link>
           <Link
             to="/writeoff"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            onClick={() => setActiveTab("writeoff")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 ${activeTab == "writeoff" ? "text-yellow-500" : "text-gray-500"} hover:bg-gray-100`}
           >
             <RiFileDamageFill />
             <span className="text-sm font-medium"> Write Off</span>
           </Link>
           <Link
             to="/warehouse"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            onClick={() => setActiveTab("warehouse")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 ${activeTab == "warehouse" ? "text-yellow-500" : "text-gray-500"} hover:bg-gray-100`}
           >
             <MdOutlineWarehouse />
             <span className="text-sm font-medium"> Warehouses</span>
@@ -70,7 +82,7 @@ function SideMenu() {
           {/* For future ref
           <Link
             to="/report"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100"
           >
             <SlDocs />
             <span className="text-sm font-medium"> Report</span>
@@ -78,7 +90,7 @@ function SideMenu() {
 
           {/* Comment for future ref
           <details className="group [&_summary::-webkit-details-marker]:hidden">
-            <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+            <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100">
               <Link to="/manage-store">
                 <div className="flex items-center gap-2">
                   <MdOutlineStorefront />
@@ -88,9 +100,11 @@ function SideMenu() {
             </summary>
           </details> */}
 
-          <Link to="/history">
+          <Link to="/history"
+            onClick={() => setActiveTab("history")}
+          >
             <details className="group [&_summary::-webkit-details-marker]:hidden">
-              <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+              <summary className={`flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 ${activeTab == "history" ? "text-yellow-500" : "text-gray-500"} hover:bg-gray-100`}>
                 <div className="flex items-center gap-2">
                   <MdHistory />
                   <span className="text-sm font-medium"> History </span>

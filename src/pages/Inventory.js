@@ -21,6 +21,10 @@ function Inventory() {
   const [brands, setAllBrands] = useState([]);
   const [selectWarehouse, setSelectWarehouse] = useState();
   const [warehouses, setAllWarehouses] = useState([]);
+  const [totalCounts, setTotalCounts] = useState({
+    totalProductCounts: 0,
+    totalItemInWarehouse: 0
+  })
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -28,6 +32,7 @@ function Inventory() {
     fetchSalesData();
     fetchBrandData();
     fetchWarehouseData();
+    fetchTotalCountsData();
   }, [updatePage]);
 
   // Fetching Data of All Warehouse items
@@ -38,6 +43,18 @@ function Inventory() {
       .then((response) => response.json())
       .then((data) => {
         setAllWarehouses(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
+
+  // Fetching Data of All Total Counts
+  const fetchTotalCountsData = (warehouse = "") => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}product/get-total-counts?selectWarehouse=${warehouse || ""}`, {
+      headers: { role: myLoginUser?.roleID?.name }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTotalCounts(data);
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
@@ -136,7 +153,8 @@ function Inventory() {
   const handleWarehouse = (value) => {
     if (value) {
       setSelectWarehouse(value);
-      fetchProductByWarehouse(value)
+      fetchProductByWarehouse(value);
+      fetchTotalCountsData(value);
     }
   };
 
@@ -164,6 +182,7 @@ function Inventory() {
     setSearchTerm('');
     setSelectWarehouse('');
     fetchProductsData();
+    fetchTotalCountsData();
   }
 
   return (
@@ -173,15 +192,20 @@ function Inventory() {
           <span className="font-semibold px-4">Overall Inventory</span>
 
           <div className=" flex flex-col md:flex-row md:justify-start md:items-center">
-            <div className="flex flex-col p-10 w-full md:w-3/12">
+            <div className="flex flex-col p-5 w-full md:w-3/12">
               <span className="font-semibold text-blue-600 text-base">
                 Total Products
               </span>
               <span className="font-semibold text-gray-600 text-base">
-                {products.length}
+                {totalCounts?.totalProductCounts}
               </span>
-              <span className="font-thin text-gray-400 text-xs">
-                Last 7 days
+            </div>
+            <div className="flex flex-col p-5 w-full md:w-4/12">
+              <span className="font-semibold text-blue-600 text-base">
+                Total Item In Selected Warehouse
+              </span>
+              <span className="font-semibold text-gray-600 text-base">
+                {totalCounts?.totalItemInWarehouse}
               </span>
             </div>
             {/* <div className="flex flex-col gap-3 p-10   w-full  md:w-3/12 sm:border-y-2  md:border-x-2 md:border-y-0">
