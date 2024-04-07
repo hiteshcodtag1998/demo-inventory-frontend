@@ -59,8 +59,26 @@ export default function AddWriteOffDetails({
         //     return item
         // });
 
+        const writeOffPayload = writeOff?.map((item, index) => {
+            // Add each item to the submittedItems array
+            if (index !== 0) {
+                item.saleDate = moment(new Date(writeOff[0].saleDate)).format('DD-MM-YYYY')
+                item.warehouseID = writeOff[0].warehouseID
+                item.supplierName = writeOff[0].supplierName
+                item.referenceNo = writeOff[0].referenceNo
+            } else {
+                item.saleDate = moment(new Date(writeOff[index].saleDate)).format('DD-MM-YYYY')
+            }
+            return item
+        });
+
         // Check if any product field is null or empty
-        const hasEmptyField = !writeOff || !writeOff.productID || !writeOff.stockSold || !writeOff.saleDate;
+        const hasEmptyField = writeOffPayload.some(
+            (p) =>
+                !p?.productID ||
+                !p?.stockSold ||
+                !p?.saleDate
+        )
 
         if (hasEmptyField) {
             toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
@@ -77,7 +95,7 @@ export default function AddWriteOffDetails({
             return;
         }
 
-        const payload = { ...writeOff, saleDate: moment(new Date(writeOff.saleDate)).format('DD-MM-YYYY') }
+        // const payload = { ...writeOff, saleDate: moment(new Date(writeOff.saleDate)).format('DD-MM-YYYY') }
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/add`, {
             method: "POST",
@@ -86,7 +104,7 @@ export default function AddWriteOffDetails({
                 requestBy: myLoginUser?._id,
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(writeOffPayload),
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -342,6 +360,7 @@ export default function AddWriteOffDetails({
                                                                 dateFormat="dd-MM-yyyy"
                                                                 selected={writeOff[index]?.saleDate ? new Date(writeOff[index]?.saleDate) : ""}
                                                                 placeholderText="dd-mm-yyyy"
+                                                                maxDate={new Date()}
                                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                                 onChange={(date) => {
                                                                     handleInputChange(index, 'saleDate', date)
