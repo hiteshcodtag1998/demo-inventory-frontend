@@ -1,8 +1,11 @@
+import axios from 'axios'
 import React, { useState, useEffect, useContext } from "react";
 import AuthContext from "../AuthContext";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import AddTransferStockDetails from "../components/AddTransferStock";
+import { FaDownload } from "react-icons/fa6";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 function TransferStockDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -12,6 +15,7 @@ function TransferStockDetails() {
     const [updatePage, setUpdatePage] = useState(true);
     const [warehouses, setAllWarehouses] = useState([]);
     const myLoginUser = JSON.parse(localStorage.getItem("user"));
+    const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
 
     const authContext = useContext(AuthContext);
 
@@ -81,6 +85,46 @@ function TransferStockDetails() {
         setUpdatePage(!updatePage);
     };
 
+    const handleDownload = async (data, index) => {
+        try {
+            // Set the loader to true for the specific index
+            setPdfBtnLoaderIndexes(prevIndexes => {
+                const newIndexes = [...prevIndexes];
+                newIndexes[index] = true;
+                return newIndexes;
+            });
+
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transferstock/transfterstock-pdf-download`, data, {
+                responseType: 'arraybuffer',
+            });
+            console.log('response', response)
+            // Assuming the server returns the PDF content as a blob
+            // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'output.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.open(url, '_blank');
+            setPdfBtnLoaderIndexes(prevIndexes => {
+                const newIndexes = [...prevIndexes];
+                newIndexes[index] = false;
+                return newIndexes;
+            });
+            // window.URL.revokeObjectURL(url);
+        } catch (error) {
+            setPdfBtnLoaderIndexes(prevIndexes => {
+                const newIndexes = [...prevIndexes];
+                newIndexes[index] = false;
+                return newIndexes;
+            });
+            console.log('Error', error)
+        }
+    }
+
     return (
         <div className="col-span-12 lg:col-span-10  flex justify-center">
             <div className=" flex flex-col gap-5 w-11/12">
@@ -131,6 +175,9 @@ function TransferStockDetails() {
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     Transfer Date
                                 </th>
+                                <th className="whitespace-nowrap text-left font-medium text-gray-900">
+                                    Action
+                                </th>
                                 {/* <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Total Purchase Amount
                 </th> */}
@@ -170,6 +217,19 @@ function TransferStockDetails() {
                                                 new Date().toLocaleDateString()
                                                 ? "Today"
                                                 : element.transferDate}
+                                        </td>
+                                        <td>
+                                            <div className="flex">
+                                                <Tooltip title="Download Sale Note" arrow>
+                                                    <span
+                                                        className="text-green-700 px-2 flex"
+                                                    >
+                                                        {pdfBtnLoaderIndexes[index] ? <CircularProgress size={20} /> :
+                                                            <FaDownload className={`cursor-pointer ${pdfBtnLoaderIndexes[index] && "block"}`} onClick={() => handleDownload(element, index)} />
+                                                        }
+                                                    </span>
+                                                </Tooltip>
+                                            </div>
                                         </td>
                                         {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       ${element.TotalPurchaseAmount}

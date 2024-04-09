@@ -204,7 +204,7 @@ function Sales() {
                   Stock Sold
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Supplier Name
+                  Customer Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Warehouse Name
