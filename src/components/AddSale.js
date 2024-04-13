@@ -8,6 +8,7 @@ import AddBrand from "./AddBrand";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from "moment";
+import axios from 'axios'
 
 export default function AddSale({
   addSaleModalSetting,
@@ -32,6 +33,7 @@ export default function AddSale({
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
   const [showBrandModal, setBrandModal] = useState(false);
+  const [pdfOpen, setPdfOpen] = useState(false);
 
 
   // Handling Input Change for input fields
@@ -45,26 +47,94 @@ export default function AddSale({
     setSale(updatedSales);
   };
 
-  // POST Data
-  const addSale = () => {
+  const formatSaleData = () => {
+    let salePayload = []
+    const saleState = sale.map(item => ({ ...item }));
+
+    if (saleState?.length > 0) {
+      salePayload = saleState?.map((item, index) => {
+        // Add each item to the submittedItems array
+        if (index !== 0) {
+          item.saleDate = moment(new Date(sale[0].saleDate)).format('DD-MM-YYYY')
+          item.warehouseID = sale[0].warehouseID
+          item.supplierName = sale[0].supplierName
+          item.referenceNo = sale[0].referenceNo
+        } else {
+          item.saleDate = moment(new Date(sale[index].saleDate)).format('DD-MM-YYYY')
+        }
+        return item
+      });
+    }
+    return salePayload
+  }
+
+  // PDF Download
+  const pdfDownload = async () => {
+
+    const salePayload = formatSaleData();
 
     if (sale?.length === 0) {
       toastMessage("Please add sale", TOAST_TYPE.TYPE_ERROR)
       return;
     }
 
-    const salePayload = sale?.map((item, index) => {
-      // Add each item to the submittedItems array
-      if (index !== 0) {
-        item.saleDate = moment(new Date(sale[0].saleDate)).format('DD-MM-YYYY')
-        item.warehouseID = sale[0].warehouseID
-        item.supplierName = sale[0].supplierName
-        item.referenceNo = sale[0].referenceNo
-      } else {
-        item.saleDate = moment(new Date(sale[index].saleDate)).format('DD-MM-YYYY')
+    // Check if any product field is null or empty
+    const hasEmptyField = salePayload.some(
+      (p) =>
+        !p?.productID ||
+        !p?.stockSold ||
+        !p?.saleDate
+    )
+
+    const hasFieldLessthanZero = salePayload.some(
+      (p) =>
+        p?.stockSold < 1
+    )
+
+    if (hasEmptyField) {
+      toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
+      return;
+    }
+
+    if (hasFieldLessthanZero) {
+      toastMessage("Sale quantity should be grater than zero", TOAST_TYPE.TYPE_ERROR);
+      return;
+    }
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_BASE_URL}sales/sale-multipleitems-pdf-download`,
+      salePayload,
+      {
+        headers: {
+          'role': myLoginUser?.roleID?.name,
+          'requestBy': myLoginUser?._id,
+        },
+        responseType: 'arraybuffer',
+        'Content-Type': 'application/json',
       }
-      return item
-    });
+    );
+    // Assuming the server returns the PDF content as a blob
+    // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'output.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.open(url, '_blank');
+  };
+
+  // POST Data
+  const addSale = () => {
+
+    const salePayload = formatSaleData();
+
+    if (sale?.length === 0) {
+      toastMessage("Please add sale", TOAST_TYPE.TYPE_ERROR)
+      return;
+    }
 
     // Check if any product field is null or empty
     const hasEmptyField = salePayload.some(
@@ -105,8 +175,9 @@ export default function AddSale({
         }
 
         toastMessage("Sale ADDED", TOAST_TYPE.TYPE_SUCCESS)
-        handlePageUpdate();
-        addSaleModalSetting();
+        // handlePageUpdate();
+        // addSaleModalSetting();
+        setPdfOpen(true)
       })
       .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
   };
@@ -127,7 +198,6 @@ export default function AddSale({
   };
 
   const removeForm = (index) => {
-    console.log('index', index)
     setSale(prevSale => prevSale.filter((_, i) => i !== index));
   };
 
@@ -468,6 +538,18 @@ export default function AddSale({
                     </div>
                   </div>
                 </div>
+                {pdfOpen && <div className="bg-gray-50 px-4 py-3 sm:px-6">
+                  <h2 className="text-lg font-semibold">Are you want to download invoice bill?</h2>
+                  <p>This is the existing dialog sale items.</p>
+
+                  <button
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto"
+                    onClick={pdfDownload}
+                  >
+                    Pdf Download
+                  </button>
+                </div>}
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
@@ -479,7 +561,10 @@ export default function AddSale({
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => addSaleModalSetting()}
+                    onClick={() => {
+                      handlePageUpdate();
+                      addSaleModalSetting();
+                    }}
                     ref={cancelButtonRef}
                   >
                     Cancel

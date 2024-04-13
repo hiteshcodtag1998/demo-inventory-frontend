@@ -8,6 +8,7 @@ import AddBrand from "./AddBrand";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from "moment";
+import axios from 'axios'
 
 export default function AddWriteOffDetails({
     addSaleModalSetting,
@@ -30,16 +31,100 @@ export default function AddWriteOffDetails({
     const [open, setOpen] = useState(true);
     const cancelButtonRef = useRef(null);
     const [showBrandModal, setBrandModal] = useState(false);
+    const [pdfOpen, setPdfOpen] = useState(false);
 
     // Handling Input Change for input fields
     const handleInputChange = (index, key, value) => {
-        const updatedSales = [...writeOff];
-        if (key === 'productID') {
-            const brandInfo = products?.find(p => p._id === value)?.BrandID;
-            updatedSales[index] = { ...updatedSales[index], ['brandID']: brandInfo?._id };
+        try {
+            const updatedSales = [...writeOff];
+            if (key === 'productID') {
+                const brandInfo = products?.find(p => p._id === value)?.BrandID;
+                updatedSales[index] = { ...updatedSales[index], ['brandID']: brandInfo?._id };
+            }
+            updatedSales[index] = { ...updatedSales[index], [key]: value };
+            setPurchase(updatedSales);
+        } catch (error) {
+            toastMessage("Somethin went wrong!", TOAST_TYPE.TYPE_ERROR);
         }
-        updatedSales[index] = { ...updatedSales[index], [key]: value };
-        setPurchase(updatedSales);
+    };
+
+    const formatWriteOffData = () => {
+        let writeOffPayload = []
+        const writeOffState = writeOff.map(item => ({ ...item }));
+
+        if (writeOffState?.length > 0) {
+            writeOffPayload = writeOffState?.map((item, index) => {
+                // Add each item to the submittedItems array
+                if (index !== 0) {
+                    item.saleDate = moment(new Date(writeOff[0].saleDate)).format('DD-MM-YYYY')
+                    item.warehouseID = writeOff[0].warehouseID
+                    item.supplierName = writeOff[0].supplierName
+                    item.referenceNo = writeOff[0].referenceNo
+                } else {
+                    item.saleDate = moment(new Date(writeOff[index].saleDate)).format('DD-MM-YYYY')
+                }
+                return item
+            });
+        }
+        return writeOffPayload;
+    };
+
+    // PDF Download
+    const pdfDownload = async () => {
+
+        const writeoffPayload = formatWriteOffData();
+
+        if (writeOff?.length === 0) {
+            toastMessage("Please add writeoff", TOAST_TYPE.TYPE_ERROR)
+            return;
+        }
+
+        // Check if any product field is null or empty
+        const hasEmptyField = writeoffPayload.some(
+            (p) =>
+                !p?.productID ||
+                !p?.stockSold ||
+                !p?.saleDate
+        )
+
+        const hasFieldLessthanZero = writeoffPayload.some(
+            (p) =>
+                p?.stockSold < 1
+        )
+
+        if (hasEmptyField) {
+            toastMessage("Please fill in all fields for each writeoff", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
+
+        if (hasFieldLessthanZero) {
+            toastMessage("Writeoff quantity should be grater than zero", TOAST_TYPE.TYPE_ERROR);
+            return;
+        }
+
+        const response = await axios.post(
+            `${process.env.REACT_APP_API_BASE_URL}writeoff/writeOff-multipleitems-pdf-download`,
+            writeoffPayload,
+            {
+                headers: {
+                    'role': myLoginUser?.roleID?.name,
+                    'requestBy': myLoginUser?._id,
+                },
+                responseType: 'arraybuffer',
+                'Content-Type': 'application/json',
+            }
+        );
+        // Assuming the server returns the PDF content as a blob
+        // setPdfData(new Blob([response.data], { type: 'application/pdf' }));
+
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'output.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.open(url, '_blank');
     };
 
     // POST Data
@@ -49,28 +134,7 @@ export default function AddWriteOffDetails({
             return;
         }
 
-        // const writeOffPayload = writeOff?.map((item, index) => {
-        //     // Add each item to the submittedItems array
-        //     if (index !== 0) {
-        //         item.saleDate = writeOff[0].saleDate
-        //         item.warehouseID = writeOff[0].warehouseID
-        //         item.supplierName = writeOff[0].supplierName
-        //     }
-        //     return item
-        // });
-
-        const writeOffPayload = writeOff?.map((item, index) => {
-            // Add each item to the submittedItems array
-            if (index !== 0) {
-                item.saleDate = moment(new Date(writeOff[0].saleDate)).format('DD-MM-YYYY')
-                item.warehouseID = writeOff[0].warehouseID
-                item.supplierName = writeOff[0].supplierName
-                item.referenceNo = writeOff[0].referenceNo
-            } else {
-                item.saleDate = moment(new Date(writeOff[index].saleDate)).format('DD-MM-YYYY')
-            }
-            return item
-        });
+        const writeOffPayload = formatWriteOffData();
 
         // Check if any product field is null or empty
         const hasEmptyField = writeOffPayload.some(
@@ -115,6 +179,7 @@ export default function AddWriteOffDetails({
                 toastMessage("WriteOff ADDED", TOAST_TYPE.TYPE_SUCCESS)
                 handlePageUpdate();
                 addSaleModalSetting();
+                // setPdfOpen(true)
             })
             .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
     };
@@ -135,7 +200,6 @@ export default function AddWriteOffDetails({
     };
 
     const removeForm = (index) => {
-        console.log('index', index)
         setPurchase(prevSale => prevSale.filter((_, i) => i !== index));
     };
 
@@ -174,13 +238,13 @@ export default function AddWriteOffDetails({
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg overflow-y-scroll">
                                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                                     <div className="sm:flex sm:items-start">
-                                        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                                        {/* <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
                                             <PlusIcon
                                                 className="h-6 w-6 text-blue-400"
                                                 aria-hidden="true"
                                                 onClick={handleAddForm}
                                             />
-                                        </div>
+                                        </div> */}
                                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left ">
                                             <Dialog.Title
                                                 as="h3"
@@ -408,6 +472,18 @@ export default function AddWriteOffDetails({
                                         </div>
                                     </div>
                                 </div>
+                                {pdfOpen && <div className="bg-gray-50 px-4 py-3 sm:px-6">
+                                    <h2 className="text-lg font-semibold">Are you want to download invoice bill?</h2>
+                                    <p>This is the existing dialog writeOff items.</p>
+
+                                    <button
+                                        type="button"
+                                        className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto"
+                                        onClick={pdfDownload}
+                                    >
+                                        Pdf Download
+                                    </button>
+                                </div>}
                                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                     <button
                                         type="button"
@@ -419,7 +495,7 @@ export default function AddWriteOffDetails({
                                     <button
                                         type="button"
                                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                        onClick={() => addSaleModalSetting()}
+                                        onClick={() => { handlePageUpdate(); addSaleModalSetting() }}
                                         ref={cancelButtonRef}
                                     >
                                         Cancel
