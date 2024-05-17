@@ -8,6 +8,7 @@ import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdatePurchaseDetails from "../components/UpdatePurchaseDetails";
 import { MdEdit } from "react-icons/md";
+import moment from "moment";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -238,7 +239,8 @@ function PurchaseDetails() {
                       {new Date(element.PurchaseDate).toLocaleDateString() ==
                         new Date().toLocaleDateString()
                         ? "Today"
-                        : element.PurchaseDate}
+                        :
+                        moment(element.PurchaseDate, "YYYY-MM-DD").format("DD-MM-YYYY")}
                     </td>
                     <td>
                       <div className="flex">

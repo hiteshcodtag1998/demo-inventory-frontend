@@ -8,6 +8,7 @@ import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdateWriteOff from "../components/UpdateWriteOff";
 import { MdEdit } from "react-icons/md";
+import moment from "moment";
 
 function WriteOffDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -237,7 +238,7 @@ function WriteOffDetails() {
                                             {new Date(element.SaleDate).toLocaleDateString() ==
                                                 new Date().toLocaleDateString()
                                                 ? "Today"
-                                                : element.SaleDate}
+                                                : moment(element.SaleDate, "YYYY-MM-DD").format("DD-MM-YYYY")}
                                         </td>
                                         <td>
                                             <div className="flex">

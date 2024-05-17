@@ -6,6 +6,7 @@ import { toastMessage } from "../utils/handler";
 import AddTransferStockDetails from "../components/AddTransferStock";
 import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
+import moment from 'moment';
 
 function TransferStockDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -216,7 +217,7 @@ function TransferStockDetails() {
                                             {new Date(element.transferDate).toLocaleDateString() ==
                                                 new Date().toLocaleDateString()
                                                 ? "Today"
-                                                : element.transferDate}
+                                                : moment(element.transferDate, "YYYY-MM-DD").format("DD-MM-YYYY")}
                                         </td>
                                         <td>
                                             <div className="flex">

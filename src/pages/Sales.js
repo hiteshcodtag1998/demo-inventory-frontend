@@ -8,6 +8,7 @@ import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdateSale from "../components/UpdateSale";
 import { MdEdit } from "react-icons/md";
+import moment from "moment";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
@@ -256,7 +257,7 @@ function Sales() {
                       {new Date(element.SaleDate).toLocaleDateString() ==
                         new Date().toLocaleDateString()
                         ? "Today"
-                        : element.SaleDate}
+                        : moment(element.SaleDate, "YYYY-MM-DD").format("DD-MM-YYYY")}
                     </td>
                     <td>
                       <div className="flex">
