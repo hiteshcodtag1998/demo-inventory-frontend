@@ -68,7 +68,7 @@ export default function AddTransferStockDetails({
             return;
         }
 
-        const payload = { ...purchase, purchaseDate: moment(new Date(purchase.purchaseDate)).format('DD-MM-YYYY') }
+        const payload = { ...purchase, purchaseDate: moment(new Date(purchase.purchaseDate)).format('YYYY-MM-DD') }
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}transferstock/add`, {
             method: "POST",

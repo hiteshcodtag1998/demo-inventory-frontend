@@ -52,12 +52,12 @@ export default function AddPurchaseDetails({
       purchasePayload = purchaseState?.map((item, index) => {
         // Add each item to the submittedItems array
         if (index !== 0) {
-          item.purchaseDate = moment(new Date(purchase[0].purchaseDate)).format('DD-MM-YYYY')
+          item.purchaseDate = moment(new Date(purchase[0].purchaseDate)).format('YYYY-MM-DD')
           item.warehouseID = purchase[0].warehouseID
           item.supplierName = purchase[0].supplierName
           item.referenceNo = purchase[0].referenceNo
         } else {
-          item.purchaseDate = moment(new Date(purchase[index].purchaseDate)).format('DD-MM-YYYY')
+          item.purchaseDate = moment(new Date(purchase[index].purchaseDate)).format('YYYY-MM-DD')
         }
         return item
       });

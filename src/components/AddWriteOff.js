@@ -50,18 +50,18 @@ export default function AddWriteOffDetails({
 
     const formatWriteOffData = () => {
         let writeOffPayload = []
-        const writeOffState = writeOff.map(item => ({ ...item }));
+        const writeOffState = writeOff?.length > 0 ? writeOff.map(item => ({ ...item })) : [];
 
         if (writeOffState?.length > 0) {
             writeOffPayload = writeOffState?.map((item, index) => {
                 // Add each item to the submittedItems array
                 if (index !== 0) {
-                    item.saleDate = moment(new Date(writeOff[0].saleDate)).format('DD-MM-YYYY')
+                    item.saleDate = moment(new Date(writeOff[0].saleDate)).format('YYYY-MM-DD')
                     item.warehouseID = writeOff[0].warehouseID
                     item.supplierName = writeOff[0].supplierName
                     item.referenceNo = writeOff[0].referenceNo
                 } else {
-                    item.saleDate = moment(new Date(writeOff[index].saleDate)).format('DD-MM-YYYY')
+                    item.saleDate = moment(new Date(writeOff[index].saleDate)).format('YYYY-MM-DD')
                 }
                 return item
             });
@@ -159,7 +159,7 @@ export default function AddWriteOffDetails({
             return;
         }
 
-        // const payload = { ...writeOff, saleDate: moment(new Date(writeOff.saleDate)).format('DD-MM-YYYY') }
+        // const payload = [{ ...writeOffPayload, saleDate: moment(new Date(writeOffPayload.saleDate)).format('YYYY-MM-DD') }]
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/add`, {
             method: "POST",

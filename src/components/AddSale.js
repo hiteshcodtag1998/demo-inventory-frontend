@@ -55,12 +55,12 @@ export default function AddSale({
       salePayload = saleState?.map((item, index) => {
         // Add each item to the submittedItems array
         if (index !== 0) {
-          item.saleDate = moment(new Date(sale[0].saleDate)).format('DD-MM-YYYY')
+          item.saleDate = moment(new Date(sale[0].saleDate)).format('YYYY-MM-DD')
           item.warehouseID = sale[0].warehouseID
           item.supplierName = sale[0].supplierName
           item.referenceNo = sale[0].referenceNo
         } else {
-          item.saleDate = moment(new Date(sale[index].saleDate)).format('DD-MM-YYYY')
+          item.saleDate = moment(new Date(sale[index].saleDate)).format('YYYY-MM-DD')
         }
         return item
       });
