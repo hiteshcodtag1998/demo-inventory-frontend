@@ -194,6 +194,11 @@ function WriteOffDetails() {
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     Warehouse Name
                                 </th>
+                                {
+                                    myLoginUser?.roleID?.name === "SuperAdmin" && <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                                        Status
+                                    </th>
+                                }
                                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                     WriteOff Date
                                 </th>
@@ -234,6 +239,11 @@ function WriteOffDetails() {
                                         <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                                             {element?.warehouseID?.name || ""}
                                         </td>
+                                        {
+                                            myLoginUser?.roleID?.name === "SuperAdmin" && <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                                                {element?.isActive ? "Availble" : "Not Availble"}
+                                            </td>
+                                        }
                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                             {new Date(element.SaleDate).toLocaleDateString() ==
                                                 new Date().toLocaleDateString()
