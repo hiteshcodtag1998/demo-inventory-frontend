@@ -8,7 +8,8 @@ import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdateSale from "../components/UpdateSale";
 import { MdEdit } from "react-icons/md";
-import moment from "moment";
+// import moment from "moment";
+import moment from 'moment-timezone';
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
@@ -260,14 +261,18 @@ function Sales() {
                     </td>
                     {
                       myLoginUser?.roleID?.name === "SuperAdmin" && <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                        {element?.isActive ? "Availble" : "Not Availble"}
+                        {element?.isActive ? "Availble" : "Deleted"}
                       </td>
                     }
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {new Date(element.SaleDate).toLocaleDateString() ==
                         new Date().toLocaleDateString()
                         ? "Today"
-                        : moment(element.SaleDate, "YYYY-MM-DD").format("DD-MM-YYYY")}
+                        : element?.SaleDate
+                          ? moment.tz(element.SaleDate, moment.tz.guess()).format('DD-MM-YYYY HH:mm')
+                          : null
+                        // moment(element.SaleDate, "YYYY-MM-DD HH:mm").format("DD-MM-YYYY HH:mm")
+                      }
                     </td>
                     <td>
                       <div className="flex">

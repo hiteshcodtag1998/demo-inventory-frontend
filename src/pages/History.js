@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Tooltip } from "@mui/material";
 import { MdDeleteForever } from "react-icons/md";
 import ConfirmationDialog from "../components/ConfirmationDialog";
-import moment from "moment";
+import moment from "moment-timezone";
 
 function History() {
     const [history, setAllHistory] = useState([]);
@@ -66,7 +66,10 @@ function History() {
                                 {element?.productCode ? <span>ProductCode: {element.productCode}</span> : ""}
                                 {/* <span>{element?.createdAt ? new Date(element?.createdAt).toLocaleString() : ""}</span> */}
                                 {element?.updatedById ? <span>CreatedBy: {element.updatedById?.email}</span> : ""}
-                                {element?.historyDate ? <span>HistoryDate: {moment(element?.historyDate).format("DD-MM-YYYY HH:MM:SS A")}</span> : ""}
+                                {element?.historyDate ? <span>HistoryDate: {
+                                    // moment.tz(element.historyDate, moment.tz.guess()).format('DD-MM-YYYY HH:mm')
+                                    moment(element?.historyDate).tz(moment.tz.guess()).format("DD-MM-YYYY HH:mm")
+                                }</span> : ""}
                             </div>
                             {
                                 myLoginUser?.roleID?.name === "SuperAdmin" &&

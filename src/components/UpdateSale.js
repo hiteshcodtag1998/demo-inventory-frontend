@@ -2,6 +2,8 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
+import DatePicker from 'react-datepicker';
+import moment from "moment";
 
 export default function UpdateSale({
     brands,
@@ -39,6 +41,10 @@ export default function UpdateSale({
         if (!sale.productID || !sale.stockSold || !sale.saleDate) {
             toastMessage("Please fill in all fields for each sale", TOAST_TYPE.TYPE_ERROR);
             return;
+        }
+
+        if (sale?.saleDate) {
+            sale.saleDate = moment(new Date(sale.saleDate)).format('YYYY-MM-DD HH:mm')
         }
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}sales/update`, {
@@ -231,7 +237,19 @@ export default function UpdateSale({
                                                         >
                                                             Sales Date
                                                         </label>
-                                                        <input
+                                                        <DatePicker
+                                                            dateFormat="dd-MM-yyyy HH:mm"
+                                                            selected={sale?.saleDate ? new Date(sale.saleDate) : ""}
+                                                            placeholderText="dd-mm-yyyy"
+                                                            maxDate={new Date()}
+                                                            showTimeSelect
+                                                            timeIntervals={1}
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            onChange={(date) => {
+                                                                handleInputChange('saleDate', date)
+                                                            }}
+                                                        />
+                                                        {/* <input
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             type="date"
                                                             id="saleDate"
@@ -240,7 +258,7 @@ export default function UpdateSale({
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
-                                                        />
+                                                        /> */}
                                                     </div>
                                                     <div>
                                                         <label

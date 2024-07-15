@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import DatePicker from 'react-datepicker';
+import moment from "moment";
 
 export default function UpdateWriteOff({
     brands,
@@ -40,6 +41,10 @@ export default function UpdateWriteOff({
         if (!writeOff.productID || !writeOff.stockSold || !writeOff.saleDate) {
             toastMessage("Please fill in all fields for each writeOff", TOAST_TYPE.TYPE_ERROR);
             return;
+        }
+
+        if (writeOff?.saleDate) {
+            writeOff.saleDate = moment(new Date(writeOff.saleDate)).format('YYYY-MM-DD HH:mm')
         }
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/update`, {
@@ -214,10 +219,13 @@ export default function UpdateWriteOff({
                                                             WriteOff Date
                                                         </label>
                                                         <DatePicker
-                                                            dateFormat="dd-MM-yyyy"
-                                                            selected={writeOff.saleDate ? new Date(writeOff.saleDate.split("-")[2], writeOff.saleDate.split("-")[1] - 1, writeOff.saleDate.split("-")[0]) : ""}
+                                                            dateFormat="dd-MM-yyyy HH:mm"
+                                                            selected={writeOff?.saleDate ? new Date(writeOff.saleDate) : ""}
+                                                            // selected={writeOff.saleDate ? new Date(writeOff.saleDate.split("-")[2], writeOff.saleDate.split("-")[1] - 1, writeOff.saleDate.split("-")[0]) : ""}
                                                             placeholderText="dd-mm-yyyy"
                                                             maxDate={new Date()}
+                                                            showTimeSelect
+                                                            timeIntervals={1}
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             onChange={(date) => {
                                                                 handleInputChange('saleDate', date)

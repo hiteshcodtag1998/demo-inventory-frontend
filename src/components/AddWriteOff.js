@@ -56,12 +56,12 @@ export default function AddWriteOffDetails({
             writeOffPayload = writeOffState?.map((item, index) => {
                 // Add each item to the submittedItems array
                 if (index !== 0) {
-                    item.saleDate = moment(new Date(writeOff[0].saleDate)).format('YYYY-MM-DD')
+                    item.saleDate = moment(new Date(writeOff[0].saleDate)).format('YYYY-MM-DD HH:mm')
                     item.warehouseID = writeOff[0].warehouseID
                     item.supplierName = writeOff[0].supplierName
                     item.referenceNo = writeOff[0].referenceNo
                 } else {
-                    item.saleDate = moment(new Date(writeOff[index].saleDate)).format('YYYY-MM-DD')
+                    item.saleDate = moment(new Date(writeOff[index].saleDate)).format('YYYY-MM-DD HH:mm')
                 }
                 return item
             });
@@ -421,10 +421,12 @@ export default function AddWriteOffDetails({
                                                                 WriteOff Date
                                                             </label>
                                                             <DatePicker
-                                                                dateFormat="dd-MM-yyyy"
+                                                                dateFormat="dd-MM-yyyy HH:mm"
                                                                 selected={writeOff[index]?.saleDate ? new Date(writeOff[index]?.saleDate) : ""}
                                                                 placeholderText="dd-mm-yyyy"
                                                                 maxDate={new Date()}
+                                                                showTimeSelect
+                                                                timeIntervals={1}
                                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                                 onChange={(date) => {
                                                                     handleInputChange(index, 'saleDate', date)

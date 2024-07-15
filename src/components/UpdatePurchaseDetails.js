@@ -2,6 +2,8 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
+import DatePicker from 'react-datepicker';
+import moment from "moment";
 
 export default function UpdatePurchaseDetails({
     brands,
@@ -39,6 +41,10 @@ export default function UpdatePurchaseDetails({
         if (!purchase.productID || !purchase.quantityPurchased || !purchase.purchaseDate) {
             toastMessage("Please fill in all fields for each purchase", TOAST_TYPE.TYPE_ERROR);
             return;
+        }
+
+        if (purchase?.purchaseDate) {
+            purchase.purchaseDate = moment(new Date(purchase.purchaseDate)).format('YYYY-MM-DD HH:mm')
         }
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}purchase/update`, {
@@ -231,7 +237,19 @@ export default function UpdatePurchaseDetails({
                                                         >
                                                             Purchase Date
                                                         </label>
-                                                        <input
+                                                        <DatePicker
+                                                            dateFormat="dd-MM-yyyy HH:mm"
+                                                            selected={purchase.purchaseDate ? new Date(purchase.purchaseDate) : ""}
+                                                            placeholderText="dd-mm-yyyy"
+                                                            maxDate={new Date()}
+                                                            showTimeSelect
+                                                            timeIntervals={1}
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            onChange={(date) => {
+                                                                handleInputChange('purchaseDate', date)
+                                                            }}
+                                                        />
+                                                        {/* <input
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             type="date"
                                                             id="purchaseDate"
@@ -240,7 +258,7 @@ export default function UpdatePurchaseDetails({
                                                             onChange={(e) =>
                                                                 handleInputChange(e.target.name, e.target.value)
                                                             }
-                                                        />
+                                                        /> */}
                                                     </div>
                                                     <div>
                                                         <label

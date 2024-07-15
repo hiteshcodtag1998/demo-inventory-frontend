@@ -8,7 +8,7 @@ import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdatePurchaseDetails from "../components/UpdatePurchaseDetails";
 import { MdEdit } from "react-icons/md";
-import moment from "moment";
+import moment from "moment-timezone";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -242,15 +242,17 @@ function PurchaseDetails() {
                     </td>
                     {
                       myLoginUser?.roleID?.name === "SuperAdmin" && <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                        {element?.isActive ? "Availble" : "Not Availble"}
+                        {element?.isActive ? "Availble" : "Deleted"}
                       </td>
                     }
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {new Date(element.PurchaseDate).toLocaleDateString() ==
                         new Date().toLocaleDateString()
                         ? "Today"
-                        :
-                        moment(element.PurchaseDate, "YYYY-MM-DD").format("DD-MM-YYYY")}
+                        : element?.PurchaseDate
+                          ? moment.tz(element.PurchaseDate, moment.tz.guess()).format('DD-MM-YYYY HH:mm') : null
+                        // moment(element.PurchaseDate, "YYYY-MM-DD").format("DD-MM-YYYY")
+                      }
                     </td>
                     <td>
                       <div className="flex">

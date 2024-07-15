@@ -12,7 +12,6 @@ function SideMenu() {
   const location = useLocation();
   const pathnameParts = location.pathname.split('/');
   const secondPart = pathnameParts[1]; // Index 0 will be empty since pathname starts with a slash
-  console.log(secondPart);
 
   return (
     <div className="h-full flex-col justify-between  bg-white hidden lg:flex ">
