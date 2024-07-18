@@ -67,13 +67,12 @@ function History() {
                                 {/* <span>{element?.createdAt ? new Date(element?.createdAt).toLocaleString() : ""}</span> */}
                                 {element?.updatedById ? <span>CreatedBy: {element.updatedById?.email}</span> : ""}
                                 {element?.historyDate ? <span>HistoryDate: {
-                                    moment(element.historyDate).tz(moment.tz.guess()).format("DD-MM-YYYY HH:mm")}{
-                                        moment.utc(element.historyDate).format("DD-MM-YYYY HH:mm")
-                                        // moment(element.historyDate).utc().format("DD-MM-YYYY HH:mm")
-                                        // moment(element?.historyDate).format("DD-MM-YYYY HH:mm")
-                                        // moment.tz(element.historyDate, moment.tz.guess()).format('DD-MM-YYYY HH:mm')
-                                        // moment(element?.historyDate).tz(moment.tz.guess()).format("DD-MM-YYYY HH:mm")
-                                    }</span> : ""}
+                                    moment.utc(element.historyDate).format("DD-MM-YYYY HH:mm")
+                                    // moment(element.historyDate).utc().format("DD-MM-YYYY HH:mm")
+                                    // moment(element?.historyDate).format("DD-MM-YYYY HH:mm")
+                                    // moment.tz(element.historyDate, moment.tz.guess()).format('DD-MM-YYYY HH:mm')
+                                    // moment(element?.historyDate).tz(moment.tz.guess()).format("DD-MM-YYYY HH:mm")
+                                }</span> : ""}
                             </div>
                             {
                                 myLoginUser?.roleID?.name === "SuperAdmin" &&
