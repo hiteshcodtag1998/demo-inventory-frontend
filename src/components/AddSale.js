@@ -2,7 +2,7 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { toastMessage } from "../utils/handler";
-import { TOAST_TYPE } from "../utils/constant";
+import { ROLES, TOAST_TYPE } from "../utils/constant";
 import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
 import DatePicker from 'react-datepicker';
@@ -55,12 +55,12 @@ export default function AddSale({
       salePayload = saleState?.map((item, index) => {
         // Add each item to the submittedItems array
         if (index !== 0) {
-          item.saleDate = moment(new Date(sale[0].saleDate)).format('YYYY-MM-DD HH:mm')
+          item.saleDate = sale?.[0].saleDate ? moment(new Date(sale[0].saleDate)).format('YYYY-MM-DD HH:mm') : moment().format('YYYY-MM-DD HH:mm')
           item.warehouseID = sale[0].warehouseID
           item.supplierName = sale[0].supplierName
           item.referenceNo = sale[0].referenceNo
         } else {
-          item.saleDate = moment(new Date(sale[index].saleDate)).format('YYYY-MM-DD HH:mm')
+          item.saleDate = sale?.[index].saleDate ? moment(new Date(sale[index].saleDate)).format('YYYY-MM-DD HH:mm') : moment().format('YYYY-MM-DD HH:mm')
         }
         return item
       });
@@ -464,11 +464,12 @@ export default function AddSale({
                                   </label>
                                   <DatePicker
                                     dateFormat="dd-MM-yyyy HH:mm"
-                                    selected={sale[index]?.saleDate ? new Date(sale[index].saleDate) : ""}
+                                    selected={sale[index]?.saleDate ? new Date(sale[index].saleDate) : new Date()}
                                     placeholderText="dd-mm-yyyy"
                                     maxDate={new Date()}
                                     showTimeSelect
                                     timeIntervals={1}
+                                    disabled={myLoginUser?.roleID?.name !== ROLES.SUPER_ADMIN}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     onChange={(date) => {
                                       handleInputChange(index, 'saleDate', date)

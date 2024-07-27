@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { TOAST_TYPE } from "../utils/constant";
+import { ROLES, TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 
 export default function UpdateProduct({
@@ -144,6 +144,7 @@ export default function UpdateProduct({
                                 id="brandId"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 name="brandId"
+                                disabled={myLoginUser?.roleID?.name !== ROLES.SUPER_ADMIN}
                                 value={product?.brandId || ''}
                                 onChange={(e) => handleInputChange("brandId", e.target.value)}
                               >

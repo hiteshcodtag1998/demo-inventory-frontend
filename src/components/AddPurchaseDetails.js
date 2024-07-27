@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { TOAST_TYPE } from "../utils/constant";
+import { ROLES, TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { Button } from "@mui/material";
 import AddBrand from "./AddBrand";
@@ -52,12 +52,12 @@ export default function AddPurchaseDetails({
       purchasePayload = purchaseState?.map((item, index) => {
         // Add each item to the submittedItems array
         if (index !== 0) {
-          item.purchaseDate = moment(new Date(purchase[0].purchaseDate)).format('YYYY-MM-DD HH:mm')
+          item.purchaseDate = purchase?.[0]?.purchaseDate ? moment(new Date(purchase[0].purchaseDate)).format('YYYY-MM-DD HH:mm') : moment().format('YYYY-MM-DD HH:mm')
           item.warehouseID = purchase[0].warehouseID
           item.supplierName = purchase[0].supplierName
           item.referenceNo = purchase[0].referenceNo
         } else {
-          item.purchaseDate = moment(new Date(purchase[index].purchaseDate)).format('YYYY-MM-DD HH:mm')
+          item.purchaseDate = purchase?.[index].purchaseDate ? moment(new Date(purchase[index].purchaseDate)).format('YYYY-MM-DD HH:mm') : moment().format('YYYY-MM-DD HH:mm')
         }
         return item
       });
@@ -455,11 +455,12 @@ export default function AddPurchaseDetails({
                                     </label>
                                     <DatePicker
                                       dateFormat="dd-MM-yyyy HH:mm"
-                                      selected={purchase[index]?.purchaseDate ? new Date(purchase[index].purchaseDate) : ""}
+                                      selected={purchase[index]?.purchaseDate ? new Date(purchase[index].purchaseDate) : new Date()}
                                       placeholderText="dd-mm-yyyy"
                                       maxDate={new Date()}
                                       showTimeSelect
                                       timeIntervals={1}
+                                      disabled={myLoginUser?.roleID?.name !== ROLES.SUPER_ADMIN}
                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                       onChange={(date) => {
                                         handleInputChange(index, 'purchaseDate', date)

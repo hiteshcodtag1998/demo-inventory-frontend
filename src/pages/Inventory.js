@@ -437,7 +437,7 @@ function Inventory() {
                       </td>
                     }
 
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    <td className="whitespace-nowrap px-8 py-2 text-gray-700">
                       <div className="flex">
                         <Tooltip title="Edit" arrow>
                           <span
@@ -447,7 +447,8 @@ function Inventory() {
                             <MdEdit />
                           </span>
                         </Tooltip>
-                        <Tooltip title="Delete" arrow>
+
+                        {myLoginUser?.roleID?.name === ROLES.SUPER_ADMIN && <Tooltip title="Delete" arrow>
                           <span
                             className="text-red-600 px-2 cursor-pointer"
                             onClick={() => {
@@ -462,6 +463,7 @@ function Inventory() {
                             <MdDeleteForever width={50} height={50} />
                           </span>
                         </Tooltip>
+                        }
                       </div>
                     </td>
 
