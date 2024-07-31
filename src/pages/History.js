@@ -3,6 +3,7 @@ import { Tooltip } from "@mui/material";
 import { MdDeleteForever } from "react-icons/md";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import moment from "moment-timezone";
+import { ROLES } from "../utils/constant";
 
 function History() {
     const [history, setAllHistory] = useState([]);
@@ -75,7 +76,7 @@ function History() {
                                 }</span> : ""}
                             </div>
                             {
-                                myLoginUser?.roleID?.name === "SuperAdmin" &&
+                                myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN &&
                                 <div>
                                     {/* <Tooltip title="Delete" arrow> */}
                                     <span

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from 'axios'
 import AddPurchaseDetails from "../components/AddPurchaseDetails";
 import AuthContext from "../AuthContext";
-import { TOAST_TYPE } from "../utils/constant";
+import { ROLES, TOAST_TYPE } from "../utils/constant";
 import { toastMessage } from "../utils/handler";
 import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
@@ -196,7 +196,7 @@ function PurchaseDetails() {
                   Warehouse Name
                 </th>
                 {
-                  myLoginUser?.roleID?.name === "SuperAdmin" && <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                     Status
                   </th>
                 }
@@ -241,7 +241,7 @@ function PurchaseDetails() {
                       {element?.warehouseID?.name || ""}
                     </td>
                     {
-                      myLoginUser?.roleID?.name === "SuperAdmin" && <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                         {element?.isActive ? "Availble" : "Deleted"}
                       </td>
                     }

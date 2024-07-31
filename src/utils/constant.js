@@ -1,6 +1,7 @@
 export const ROLES = {
     ADMIN: 'Admin',
-    SUPER_ADMIN: 'SuperAdmin'
+    SUPER_ADMIN: 'SuperAdmin',
+    HIDE_MASTER_SUPER_ADMIN: 'HideMasterSuperAdmin'
 }
 
 export const TOAST_TYPE = {

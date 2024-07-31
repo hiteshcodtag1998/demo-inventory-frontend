@@ -117,24 +117,24 @@ function SideMenu() {
       </div>
 
       <div className="sticky inset-x-0 bottom-0 border-t border-gray-100">
-        <div className="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
+        <div className="flex items-center gap-2 bg-white p-4 hover:bg-gray-50 md:flex-row flex-col">
           <img
             alt="Profile"
             src={`https://eu.ui-avatars.com/api/?name=${localStorageData.firstName}+${localStorageData.lastName}&size=250`}
             className="h-10 w-10 rounded-full object-cover"
           />
 
-          <div>
-            <p className="text-xs">
+          <div className="flex flex-col md:ml-2 ml-0 mt-2 md:mt-0">
+            <p className="text-xs break-all">
               <strong className="block font-medium">
                 {localStorageData.firstName + " " + localStorageData.lastName} {" "} ({localStorageData?.roleID?.name})
               </strong>
-
-              <span> {localStorageData.email} </span>
+              <span className="break-all"> {localStorageData.email} </span>
             </p>
           </div>
         </div>
       </div>
+
     </div>
   );
 }
