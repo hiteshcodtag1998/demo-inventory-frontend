@@ -76,7 +76,7 @@ function History() {
                                 }</span> : ""}
                             </div>
                             {
-                                myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN &&
+                                [ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(myLoginUser?.roleID?.name) &&
                                 <div>
                                     {/* <Tooltip title="Delete" arrow> */}
                                     <span
