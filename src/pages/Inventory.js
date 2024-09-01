@@ -379,7 +379,7 @@ function Inventory() {
                     Hide
                   </th>
                 }
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 flex justify-center">
                   More
                 </th>
               </tr>
@@ -417,7 +417,7 @@ function Inventory() {
                       {element.stock > 0 ? `In Stock (${element.stock})` : "Not in Stock"}
                     </td> */}
                     {
-                      myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                      myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex justify-center">
                         {element?.isActive ? <span
                           className="text-green-700 cursor-pointer"
                           onClick={() => {
@@ -437,7 +437,7 @@ function Inventory() {
                       </td>
                     }
 
-                    <td className="whitespace-nowrap px-8 py-2 text-gray-700">
+                    <td className="whitespace-nowrap flex justify-center py-2 text-gray-700">
                       <div className="flex">
                         <Tooltip title="Edit" arrow>
                           <span
@@ -448,7 +448,7 @@ function Inventory() {
                           </span>
                         </Tooltip>
 
-                        {myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <Tooltip title="Delete" arrow>
+                        {[ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(myLoginUser?.roleID?.name) && <Tooltip title="Delete" arrow>
                           <span
                             className="text-red-600 px-2 cursor-pointer"
                             onClick={() => {

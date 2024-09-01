@@ -68,7 +68,7 @@ export default function AddTransferStockDetails({
             return;
         }
 
-        const payload = { ...purchase, purchaseDate: moment(new Date(purchase.purchaseDate)).format('YYYY-MM-DD') }
+        const payload = { ...purchase, purchaseDate: moment(new Date(purchase.purchaseDate)).format('YYYY-MM-DD HH:mm') }
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}transferstock/add`, {
             method: "POST",
@@ -357,7 +357,7 @@ export default function AddTransferStockDetails({
                                                         <DatePicker
                                                             dateFormat="dd-MM-yyyy HH:mm"
                                                             selected={purchase?.purchaseDate ? new Date(purchase.purchaseDate) : new Date()}
-                                                            placeholderText="dd-mm-yyyy"
+                                                            placeholderText="dd-mm-yyyy HH:mm"
                                                             maxDate={new Date()}
                                                             showTimeSelect
                                                             timeIntervals={1}
