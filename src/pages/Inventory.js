@@ -375,11 +375,12 @@ function Inventory() {
                   Availibility
                 </th> */}
                 {
-                  myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN &&
+                  <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                     Hide
                   </th>
                 }
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 flex justify-center">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   More
                 </th>
               </tr>
@@ -416,29 +417,35 @@ function Inventory() {
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.stock > 0 ? `In Stock (${element.stock})` : "Not in Stock"}
                     </td> */}
-                    {
-                      myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN && <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex justify-center">
-                        {element?.isActive ? <span
-                          className="text-green-700 cursor-pointer"
-                          onClick={() => {
-                            handleClickOpen();
-                            setSelectedProduct(element)
-                            setDialogData({
-                              title: 'Are you sure want to hide?',
-                              btnSecText: 'Hide'
-                            })
-                          }}
-                        >
-                          <MdOutlineHideSource />
-                        </span> :
-                          <span
-                            className="text-red-700"
-                          >Hidden</span>}
-                      </td>
-                    }
 
-                    <td className="whitespace-nowrap flex justify-center py-2 text-gray-700">
-                      <div className="flex">
+                    {/* First column: Hide/Show functionality, conditionally rendered */}
+                    {myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN ? (
+                      <td className="py-2 text-gray-700 text-center">
+                        {element?.isActive ? (
+                          <span
+                            className="text-green-700 cursor-pointer flex justify-center"
+                            onClick={() => {
+                              handleClickOpen();
+                              setSelectedProduct(element);
+                              setDialogData({
+                                title: 'Are you sure want to hide?',
+                                btnSecText: 'Hide',
+                              });
+                            }}
+                          >
+                            <MdOutlineHideSource />
+                          </span>
+                        ) : (
+                          <span className="text-red-700">Hidden</span>
+                        )}
+                      </td>
+                    ) : (
+                      <td /> // Placeholder empty cell when the condition doesn't meet
+                    )}
+
+                    {/* Second column: Edit/Delete functionality */}
+                    <td className="py-2 text-gray-700 text-center">
+                      <div className="flex justify-center">
                         <Tooltip title="Edit" arrow>
                           <span
                             className="text-green-700 cursor-pointer"
@@ -448,22 +455,26 @@ function Inventory() {
                           </span>
                         </Tooltip>
 
-                        {[ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(myLoginUser?.roleID?.name) && <Tooltip title="Delete" arrow>
-                          <span
-                            className="text-red-600 px-2 cursor-pointer"
-                            onClick={() => {
-                              handleClickOpen();
-                              setSelectedProduct(element)
-                              setDialogData({
-                                title: 'Are you sure want to delete?',
-                                btnSecText: 'Delete'
-                              })
-                            }}
-                          >
-                            <MdDeleteForever width={50} height={50} />
-                          </span>
-                        </Tooltip>
-                        }
+                        {/* Conditional delete button for roles */}
+                        {[ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(
+                          myLoginUser?.roleID?.name
+                        ) && (
+                            <Tooltip title="Delete" arrow>
+                              <span
+                                className="text-red-600 px-2 cursor-pointer"
+                                onClick={() => {
+                                  handleClickOpen();
+                                  setSelectedProduct(element);
+                                  setDialogData({
+                                    title: 'Are you sure want to delete?',
+                                    btnSecText: 'Delete',
+                                  });
+                                }}
+                              >
+                                <MdDeleteForever width={50} height={50} />
+                              </span>
+                            </Tooltip>
+                          )}
                       </div>
                     </td>
 
