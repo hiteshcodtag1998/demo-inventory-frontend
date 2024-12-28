@@ -7,8 +7,9 @@ import { toastMessage } from "../utils/handler";
 import { FaDownload } from "react-icons/fa6";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdatePurchaseDetails from "../components/UpdatePurchaseDetails";
-import { MdEdit } from "react-icons/md";
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 import moment from "moment-timezone";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -20,6 +21,9 @@ function PurchaseDetails() {
   const [products, setAllProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
   const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState();
+  const [open, setOpen] = useState(false);
+  const [dialogData, setDialogData] = useState();
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
   const authContext = useContext(AuthContext);
@@ -136,6 +140,30 @@ function PurchaseDetails() {
       console.log('Error', error)
     }
   }
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  // Delete item
+  const deleteItem = () => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}purchase/delete/${selectedProduct?._id}`,
+      { method: 'delete', headers: { role: myLoginUser?.roleID?.name }, })
+      .then((response) => response.json())
+      .then(() => {
+        setSelectedProduct()
+        setUpdatePage(!updatePage);
+        handleClose()
+      }).catch(() => {
+        setSelectedProduct()
+        handleClose()
+      });
+  };
 
   return (
     <div className="col-span-12 lg:col-span-10  flex justify-center">
@@ -273,6 +301,26 @@ function PurchaseDetails() {
                             }
                           </span>
                         </Tooltip>
+                        {/* Conditional delete button for roles */}
+                        {[ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(
+                          myLoginUser?.roleID?.name
+                        ) && (
+                            <Tooltip title="Delete" arrow>
+                              <span
+                                className="text-red-600 px-2 cursor-pointer"
+                                onClick={() => {
+                                  handleClickOpen();
+                                  setSelectedProduct(element);
+                                  setDialogData({
+                                    title: 'Are you sure want to delete?',
+                                    btnSecText: 'Delete',
+                                  });
+                                }}
+                              >
+                                <MdDeleteForever width={50} height={50} />
+                              </span>
+                            </Tooltip>
+                          )}
                       </div>
                     </td>
                     {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
@@ -285,6 +333,13 @@ function PurchaseDetails() {
           </table>
         </div>
       </div>
+      <ConfirmationDialog
+        open={open}
+        title={dialogData?.title || ""}
+        btnFirstName="Cancel"
+        btnSecondName={dialogData?.btnSecText || ""}
+        handleClose={handleClose}
+        handleDelete={deleteItem} />
     </div>
   );
 }

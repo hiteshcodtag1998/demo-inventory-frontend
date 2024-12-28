@@ -19,21 +19,39 @@ export default function AddSale({
   brands,
   warehouses
 }) {
-  const [sale, setSale] = useState([{
-    userID: authContext.user,
-    productID: "",
-    storeID: "",
-    stockSold: "",
-    saleDate: "",
-    totalSaleAmount: "",
-    warehouseID: "",
-    supplierName: ""
-  }]);
+  const [sale, setSale] = useState([
+    {
+      userID: authContext.user,
+      productID: "",
+      // purchaseID: "",
+      // purchaseOptions: [], // Holds fetched purchase data for this entry
+      stockSold: "",
+      saleDate: "",
+      totalSaleAmount: "",
+      warehouseID: "",
+      supplierName: "",
+    },
+  ]);
   const myLoginUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
   const [showBrandModal, setBrandModal] = useState(false);
   const [pdfOpen, setPdfOpen] = useState(false);
+  const [purchaseData, setAllPurchaseData] = useState([]);
+
+
+
+  // Fetching Data of Purchase items
+  const fetchPurchaseData = () => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}purchase/get/product/${sale.ro}`, {
+      headers: { role: myLoginUser?.roleID?.name, requestBy: myLoginUser?._id, }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAllPurchaseData(data);
+      })
+      .catch((err) => toastMessage(err?.message || "Something goes wrong", TOAST_TYPE.TYPE_ERROR));
+  };
 
 
   // Handling Input Change for input fields
@@ -46,6 +64,9 @@ export default function AddSale({
     updatedSales[index] = { ...updatedSales[index], [key]: value };
     setSale(updatedSales);
   };
+
+
+
 
   const formatSaleData = () => {
     let salePayload = []
@@ -323,6 +344,8 @@ export default function AddSale({
                               />
                             </div>
                           </div>
+
+
                           <div className={`grid gap-4 mb-4 ${index !== 0 ? "sm:grid-cols-1" : "sm:grid-cols-2"}`}>
                             <div>
                               <label

@@ -420,7 +420,7 @@ function Inventory() {
 
                     {/* First column: Hide/Show functionality, conditionally rendered */}
                     {myLoginUser?.roleID?.name === ROLES.HIDE_MASTER_SUPER_ADMIN ? (
-                      <td className="py-2 text-gray-700 text-center">
+                      <td className="px-4 py-2 text-gray-700 text-center">
                         {element?.isActive ? (
                           <span
                             className="text-green-700 cursor-pointer flex justify-center"
@@ -440,12 +440,12 @@ function Inventory() {
                         )}
                       </td>
                     ) : (
-                      <td /> // Placeholder empty cell when the condition doesn't meet
+                      <></> // Placeholder empty cell when the condition doesn't meet
                     )}
 
                     {/* Second column: Edit/Delete functionality */}
-                    <td className="py-2 text-gray-700 text-center">
-                      <div className="flex justify-center">
+                    <td className="px-4 py-2 text-gray-700">
+                      <div className="flex">
                         <Tooltip title="Edit" arrow>
                           <span
                             className="text-green-700 cursor-pointer"
