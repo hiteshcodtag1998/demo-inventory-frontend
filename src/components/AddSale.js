@@ -192,7 +192,7 @@ export default function AddSale({
       .then(async (res) => {
         if (!res.ok) {
           const errorData = await res.json(); // Assuming the error response is in JSON format
-          throw new Error(errorData.message || "Something went wrong on the server");
+          throw new Error(errorData.message || errorData.error || "Something went wrong on the server");
         }
 
         toastMessage("Sale ADDED", TOAST_TYPE.TYPE_SUCCESS)
