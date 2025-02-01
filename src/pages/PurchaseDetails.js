@@ -274,7 +274,7 @@ function PurchaseDetails() {
                       </td>
                     }
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {new Date(element.PurchaseDate).toLocaleDateString() ==
+                      {new Date(element.PurchaseDate).toLocaleDateString() ===
                         new Date().toLocaleDateString()
                         ? "Today"
                         : element?.PurchaseDate
@@ -307,7 +307,7 @@ function PurchaseDetails() {
                         ) && (
                             <Tooltip title="Delete" arrow>
                               <span
-                                className="text-red-600 px-2 cursor-pointer"
+                                className="text-red-600 pr-2 cursor-pointer"
                                 onClick={() => {
                                   handleClickOpen();
                                   setSelectedProduct(element);

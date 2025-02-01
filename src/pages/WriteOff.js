@@ -7,8 +7,9 @@ import { FaDownload } from "react-icons/fa6";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import UpdateWriteOff from "../components/UpdateWriteOff";
-import { MdEdit } from "react-icons/md";
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 import moment from "moment-timezone";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 function WriteOffDetails() {
     const [showPurchaseModal, setPurchaseModal] = useState(false);
@@ -20,6 +21,8 @@ function WriteOffDetails() {
     const [pdfBtnLoaderIndexes, setPdfBtnLoaderIndexes] = useState([]);
     const [showUpdateWriteOffModal, setUpdateWriteOffModal] = useState(false);
     const [updateWriteOff, setUpdateWriteOff] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [dialogData, setDialogData] = useState();
     const myLoginUser = JSON.parse(localStorage.getItem("user"));
 
     const authContext = useContext(AuthContext);
@@ -136,6 +139,29 @@ function WriteOffDetails() {
         setUpdateWriteOffModal(!showUpdateWriteOffModal);
     };
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    // Delete item
+    const deleteItem = () => {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}writeoff/delete/${updateWriteOff?._id}`,
+            { method: 'delete', headers: { role: myLoginUser?.roleID?.name }, })
+            .then((response) => response.json())
+            .then(() => {
+                setUpdateWriteOff()
+                setUpdatePage(!updatePage);
+                handleClose()
+            }).catch(() => {
+                setUpdateWriteOff()
+                handleClose()
+            });
+    };
+
     return (
         <div className="col-span-12 lg:col-span-10  flex justify-center">
             <div className=" flex flex-col gap-5 w-11/12">
@@ -245,7 +271,7 @@ function WriteOffDetails() {
                                             </td>
                                         }
                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            {new Date(element.SaleDate).toLocaleDateString() ==
+                                            {new Date(element.SaleDate).toLocaleDateString() ===
                                                 new Date().toLocaleDateString()
                                                 ? "Today"
                                                 : element?.SaleDate
@@ -270,6 +296,26 @@ function WriteOffDetails() {
                                                         }
                                                     </span>
                                                 </Tooltip>
+                                                {/* Conditional delete button for roles */}
+                                                {[ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(
+                                                    myLoginUser?.roleID?.name
+                                                ) && (
+                                                        <Tooltip title="Delete" arrow>
+                                                            <span
+                                                                className="text-red-600 pr-2 cursor-pointer"
+                                                                onClick={() => {
+                                                                    handleClickOpen();
+                                                                    setUpdateWriteOff(element);
+                                                                    setDialogData({
+                                                                        title: 'Are you sure want to delete?',
+                                                                        btnSecText: 'Delete',
+                                                                    });
+                                                                }}
+                                                            >
+                                                                <MdDeleteForever width={50} height={50} />
+                                                            </span>
+                                                        </Tooltip>
+                                                    )}
                                             </div>
                                         </td>
                                         {/* <td className="whitespace-nowrap px-4 py-2 text-gray-700">
@@ -282,6 +328,13 @@ function WriteOffDetails() {
                     </table>
                 </div>
             </div>
+            <ConfirmationDialog
+                open={open}
+                title={dialogData?.title || ""}
+                btnFirstName="Cancel"
+                btnSecondName={dialogData?.btnSecText || ""}
+                handleClose={handleClose}
+                handleDelete={deleteItem} />
         </div>
     );
 }
