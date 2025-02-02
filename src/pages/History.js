@@ -52,70 +52,90 @@ function History() {
     };
 
     return (
-        <div className="col-span-12 lg:col-span-10 flex justify-center ">
-            <div className=" flex flex-col gap-5 w-11/12">
-                <span className="font-bold">History</span>
-                {history.map((element, index) => {
-                    return (
+        <div className="col-span-12 lg:col-span-10 flex justify-center">
+            <div className="flex flex-col gap-5 w-full md:w-11/12">
+                <span className="font-semibold text-xl text-gray-900">History</span>
+
+                {history.length > 0 ? (
+                    history.map((element, index) => (
                         <div
-                            className="bg-white w-50 h-fit flex flex-row justify-between gap-4 p-4 "
                             key={element._id}
+                            className="bg-white p-4 rounded-lg shadow-md mb-4 hover:bg-gray-50"
                         >
-                            <div className="flex flex-col gap-3 justify-between items-start">
-                                {element?.description ? <span>Description: {element.description}</span> : ""}
-                                {element?.notes ? <span>Notes: ${element.notes}</span> : ""}
-                                {element?.productCode ? <span>ProductCode: {element.productCode}</span> : ""}
-                                {/* <span>{element?.createdAt ? new Date(element?.createdAt).toLocaleString() : ""}</span> */}
-                                {element?.updatedById ? <span>CreatedBy: {element.updatedById?.email}</span> : ""}
-                                {element?.historyDate ? <span>HistoryDate: {
-                                    moment.utc(element.historyDate).format("DD-MM-YYYY HH:mm")
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-gray-800">
+                                    <div className="flex gap-3 mt-3">
+                                        <span
+                                            className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full cursor-pointer"
+                                            title="Product Code"
+                                        >
+                                            Product Code: {element?.productCode || 'N/A'}
+                                        </span>
+                                        <span
+                                            className="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full"
+                                            title="History Date"
+                                        >
+                                            {moment.utc(element.historyDate).format('DD-MM-YYYY HH:mm')}
+                                        </span>
+                                        {element?.notes && (
+                                            <span
+                                                className="px-3 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full"
+                                                title="Notes"
+                                            >
+                                                Notes
+                                            </span>
+                                        )}
+                                    </div>
+                                </span>
+                                {[ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(myLoginUser?.roleID?.name) && (
+                                    <span
+                                        className="text-red-600 cursor-pointer hover:text-red-800"
+                                        onClick={() => {
+                                            handleClickOpen();
+                                            setSelectedHistory(element);
+                                            setDialogData({
+                                                title: 'Are you sure you want to delete this history entry?',
+                                                btnSecText: 'Delete'
+                                            });
+                                        }}
+                                    >
+                                        <MdDeleteForever width={24} height={24} />
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="mt-3 text-sm text-gray-700">
+                                <p className="mb-2"><strong>Description:</strong> {element?.description || 'N/A'}</p>
+                                <p className="mb-2"><strong>Notes:</strong> {element?.notes || 'N/A'}</p>
+                                {/* <p className="mb-2"><strong>Product Code:</strong> {element?.productCode || 'N/A'}</p> */}
+                                <p className="mb-2"><strong>Created By:</strong> {element?.updatedById?.email || 'Unknown'}</p>
+                                {/* <p className="mb-2"><strong>History Date:</strong> {
                                     // moment(element.historyDate).utc().format("DD-MM-YYYY HH:mm")
                                     // moment(element?.historyDate).format("DD-MM-YYYY HH:mm")
                                     // moment.tz(element.historyDate, moment.tz.guess()).format('DD-MM-YYYY HH:mm')
                                     // moment(element?.historyDate).tz(moment.tz.guess()).format("DD-MM-YYYY HH:mm")
-                                }</span> : ""}
+                                    moment.utc(element.historyDate).format('DD-MM-YYYY HH:mm')}</p> */}
+
                             </div>
-                            {
-                                [ROLES.HIDE_MASTER_SUPER_ADMIN, ROLES.SUPER_ADMIN].includes(myLoginUser?.roleID?.name) &&
-                                <div>
-                                    {/* <Tooltip title="Delete" arrow> */}
-                                    <span
-                                        className="text-red-600 px-2 cursor-pointer"
-                                        onClick={() => {
-                                            handleClickOpen();
-                                            setSelectedHistory(element)
-                                            setDialogData({
-                                                title: 'Are you sure want to delete?',
-                                                btnSecText: 'Delete'
-                                            })
-                                        }}
-                                    >
-                                        <MdDeleteForever width={50} height={50} />
-                                    </span>
-                                    {/* </Tooltip> */}
-                                </div>
-                            }
                         </div>
-                    );
-                })}
-                {
-                    history?.length === 0 && <div
-                        className="bg-white w-50 h-fit flex flex-col gap-4 p-4 "
-                    >
-                        <div className="flex flex-col gap-3 justify-between items-start">
-                            <span>No data found</span>
-                        </div>
+                    ))
+                ) : (
+                    <div className="bg-white p-5 rounded-lg shadow-md text-center text-sm text-gray-500">
+                        No history data found.
                     </div>
-                }
+                )}
             </div>
+
             <ConfirmationDialog
                 open={open}
                 title={dialogData?.title || ""}
                 btnFirstName="Cancel"
                 btnSecondName={dialogData?.btnSecText || ""}
                 handleClose={handleClose}
-                handleDelete={deleteItem} />
+                handleDelete={deleteItem}
+            />
         </div>
+
     );
 }
 

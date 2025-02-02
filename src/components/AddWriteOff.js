@@ -254,7 +254,7 @@ export default function AddWriteOffDetails({
                                             </Dialog.Title>
                                             {writeOff.map((p, index) => (
                                                 <form action="#">
-                                                    <div className="flex justify-between items-center mt-5">
+                                                    {/* <div className="flex justify-between items-center mt-5">
                                                         <span>WriteOff: {index + 1}</span>
                                                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                                             <button
@@ -277,7 +277,7 @@ export default function AddWriteOffDetails({
                                                                 Delete
                                                             </button>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                                                         <div>
                                                             <label
