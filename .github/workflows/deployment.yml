@@ -42,7 +42,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no ubuntu@3.110.178.94 "echo 'SSH connection works!'"
 
         # Copy build files to the Lightsail instance
-        #scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@3.110.178.94:/home/ubuntu/demo-inventory-frontend
+        scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@3.110.178.94:/home/ubuntu/demo-inventory-frontend/build
 
         # Restart NGINX to serve the new build
         ssh -o StrictHostKeyChecking=no ubuntu@3.110.178.94 'sudo systemctl restart nginx'
