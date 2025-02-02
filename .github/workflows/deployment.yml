@@ -2,13 +2,15 @@ name: React App CI/CD Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-  deloyment:
+  deployment:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
@@ -19,9 +21,8 @@ jobs:
       run: npm install
 
     - name: Build React App
-      run: sudo npm run build
+      run: npm run build
       id: build
-      continue-on-error: true
 
     - name: List Build Folder Contents
       run: ls -la ./build
@@ -36,4 +37,11 @@ jobs:
 
     - name: Deploy to Lightsail
       run: |
-        scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@13.202.39.167:/home/ubuntu/inventory-demo/demo-inventory-frontend
+        # Ensure SSH connection works first (optional step for testing)
+        ssh -o StrictHostKeyChecking=no ubuntu@11.223.19.167 "echo 'SSH connection works!'"
+
+        # Copy build files to the Lightsail instance
+        scp -r -o StrictHostKeyChecking=no ./build/* ubuntu@11.223.19.167:/home/ubuntu/demo-inventory-frontend
+
+        # Optional: Restart your application on Lightsail (if you use PM2 or any other process manager)
+        ssh -o StrictHostKeyChecking=no ubuntu@11.223.19.167 'cd /home/ubuntu/demo-inventory-frontend && pm2 restart all'
